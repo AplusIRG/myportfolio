@@ -1,0 +1,40 @@
+<nav class="bg-gradient-to-r from-blue-600 to-blue-800 p-4 text-white shadow-lg">
+    <div class="container mx-auto flex items-center justify-between">
+        <!-- Logo -->
+        <a href="/" class="text-2xl font-bold tracking-tight hover:text-blue-200 transition-colors duration-300">Robert Sichomba</a>
+        
+        <!-- Hamburger Menu Button (Visible on Mobile) -->
+        <button id="menu-toggle" class="md:hidden focus:outline-none">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7"></path>
+            </svg>
+        </button>
+        
+        <!-- Navigation Links -->
+        <div id="menu" class="hidden md:flex md:items-center space-x-6">
+            <a href="/" class="hover:text-blue-200 transition-colors duration-300">Home</a>
+            <a href="/about" class="hover:text-blue-200 transition-colors duration-300">About</a>
+            <a href="/projects" class="hover:text-blue-200 transition-colors duration-300">Projects</a>
+            <a href="/blog" class="hover:text-blue-200 transition-colors duration-300">Blog</a>
+            <a href="/testimonials" class="hover:text-blue-200 transition-colors duration-300">Testimonials</a>
+        </div>
+    </div>
+    
+    <!-- Mobile Menu (Hidden by Default) -->
+    <div id="mobile-menu" class="md:hidden hidden">
+        <div class="flex flex-col space-y-4 mt-4">
+            <a href="/" class="hover:text-blue-200 transition-colors duration-300 py-2">Home</a>
+            <a href="/about" class="hover:text-blue-200 transition-colors duration-300 py-2">About</a>
+            <a href="/projects" class="hover:text-blue-200 transition-colors duration-300 py-2">Projects</a>
+            <a href="/blog" class="hover:text-blue-200 transition-colors duration-300 py-2">Blog</a>
+            <a href="/testimonials" class="hover:text-blue-200 transition-colors duration-300 py-2">Testimonials</a>
+        </div>
+    </div>
+</nav>
+
+<script>
+    document.getElementById('menu-toggle').addEventListener('click', () => {
+        const mobileMenu = document.getElementById('mobile-menu');
+        mobileMenu.classList.toggle('hidden');
+    });
+</script>

@@ -1,0 +1,1348 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Robert Sichomba | Expert Data Scientist & Full-Stack Developer{% endblock %}
+
+{% block meta_description %}Robert Sichomba - Expert Data Analyst, Machine Learning Engineer, and Full-Stack Developer specializing in data-driven solutions, educational technology, and AI applications. Based in Zambia, delivering cutting-edge digital solutions.{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="https://unpkg.com/aos@2.3.1/dist/aos.css">
+<style>
+    /* Hero Section */
+    .hero-section {
+        background: linear-gradient(135deg, rgba(30, 41, 59, 0.95) 0%, rgba(51, 65, 85, 0.9) 100%), url('{% static "images/hero-bg.jpg" %}') center/cover no-repeat;
+        color: white;
+        padding: 10rem 0 6rem;
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-section::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        height: 100px;
+        background: linear-gradient(to top, white, transparent);
+        z-index: 1;
+    }
+
+    .hero-content {
+        position: relative;
+        z-index: 2;
+    }
+
+    .hero-subtitle {
+        color: #60a5fa;
+        font-size: 1rem;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        margin-bottom: 1.5rem;
+        display: flex;
+        align-items: center;
+        font-weight: 600;
+    }
+
+    .hero-title {
+        font-size: 3.5rem;
+        font-weight: 900;
+        line-height: 1.2;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(135deg, #ffffff 0%, #cbd5e1 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .hero-description {
+        font-size: 1.25rem;
+        color: #cbd5e1;
+        margin-bottom: 2.5rem;
+        max-width: 600px;
+        line-height: 1.7;
+    }
+
+    .hero-stats {
+        display: flex;
+        gap: 3rem;
+        margin-bottom: 2.5rem;
+    }
+
+    .stat-item h3 {
+        font-size: 2.5rem;
+        font-weight: 800;
+        color: white;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        -webkit-background-clip: text;
+        background-clip: text;
+        color: transparent;
+    }
+
+    .stat-item p {
+        color: #94a3b8;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        margin: 0;
+    }
+
+    .hero-buttons {
+        display: flex;
+        gap: 1rem;
+        flex-wrap: wrap;
+    }
+
+    .hero-image-wrapper {
+        position: relative;
+        animation: float 6s ease-in-out infinite;
+    }
+
+    .hero-image {
+        max-width: 100%;
+        filter: drop-shadow(0 25px 50px rgba(0, 0, 0, 0.3));
+    }
+
+    .floating-elements {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+    }
+
+    .floating-element {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        color: #2563eb;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+        animation: float 3s ease-in-out infinite;
+    }
+
+    .floating-element.element-1 {
+        top: 10%;
+        left: 5%;
+        animation-delay: 0s;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+    }
+
+    .floating-element.element-2 {
+        top: 60%;
+        right: 10%;
+        animation-delay: 1s;
+        background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+        color: white;
+    }
+
+    .floating-element.element-3 {
+        bottom: 20%;
+        left: 15%;
+        animation-delay: 2s;
+        background: white;
+        color: #2563eb;
+    }
+
+    @keyframes float {
+        0%, 100% { transform: translateY(0px); }
+        50% { transform: translateY(-20px); }
+    }
+
+    /* Section Styling */
+    .section-padding {
+        padding: 6rem 0;
+    }
+
+    .section-header {
+        text-align: center;
+        margin-bottom: 4rem;
+    }
+
+    .section-subtitle {
+        color: #2563eb;
+        font-size: 0.875rem;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        margin-bottom: 1rem;
+        font-weight: 600;
+    }
+
+    .section-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: #1e293b;
+    }
+
+    .section-description {
+        color: #64748b;
+        font-size: 1.125rem;
+        max-width: 700px;
+        margin: 0 auto;
+        line-height: 1.7;
+    }
+
+    /* Service Cards */
+    .service-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        height: 100%;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+        position: relative;
+        overflow: hidden;
+    }
+
+    .service-card::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 4px;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        transform: translateX(-100%);
+        transition: transform 0.6s ease;
+    }
+
+    .service-card:hover::before {
+        transform: translateX(0);
+    }
+
+    .service-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-color: transparent;
+    }
+
+    .service-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin-bottom: 2rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .service-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #1e293b;
+    }
+
+    .service-description {
+        color: #64748b;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .service-tech {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin: 0;
+    }
+
+    .service-tech li {
+        background: #f1f5f9;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: #475569;
+        font-weight: 500;
+    }
+
+    /* Project Cards */
+    .project-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        position: relative;
+    }
+
+    .project-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .project-card.featured {
+        border: 2px solid #2563eb;
+    }
+
+    .project-image {
+        height: 250px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .project-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        transition: transform 0.6s ease;
+    }
+
+    .project-card:hover .project-image img {
+        transform: scale(1.1);
+    }
+
+    .project-badge {
+        position: absolute;
+        top: 1rem;
+        right: 1rem;
+        background: #2563eb;
+        color: white;
+        padding: 0.5rem 1.25rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+
+    .project-content {
+        padding: 2rem;
+    }
+
+    .project-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #1e293b;
+    }
+
+    .project-description {
+        color: #64748b;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+    }
+
+    .project-tech {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        margin-bottom: 1.5rem;
+    }
+
+    .tech-tag {
+        background: #f1f5f9;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.85rem;
+        color: #475569;
+        font-weight: 500;
+    }
+
+    .project-links {
+        display: flex;
+        gap: 1rem;
+    }
+
+    /* Course Cards */
+    .course-card {
+        background: white;
+        border-radius: 20px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+    }
+
+    .course-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+    }
+
+    .course-image {
+        height: 200px;
+        overflow: hidden;
+        position: relative;
+    }
+
+    .course-image img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .course-level {
+        position: absolute;
+        top: 1rem;
+        left: 1rem;
+        background: #10b981;
+        color: white;
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+
+    .course-content {
+        padding: 1.5rem;
+    }
+
+    .course-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        color: #1e293b;
+    }
+
+    .course-description {
+        color: #64748b;
+        line-height: 1.6;
+        margin-bottom: 1rem;
+        font-size: 0.95rem;
+    }
+
+    .course-meta {
+        display: flex;
+        gap: 1rem;
+        color: #94a3b8;
+        font-size: 0.9rem;
+        margin-bottom: 1rem;
+    }
+
+    .course-meta i {
+        color: #2563eb;
+        margin-right: 0.5rem;
+    }
+
+    /* Resource Cards */
+    .resource-card {
+        background: white;
+        border-radius: 20px;
+        padding: 2.5rem 2rem;
+        text-align: center;
+        transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        height: 100%;
+        border: 1px solid #e2e8f0;
+        box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    }
+
+    .resource-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        border-color: transparent;
+    }
+
+    .resource-icon {
+        width: 80px;
+        height: 80px;
+        border-radius: 20px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 2rem;
+        color: white;
+        margin: 0 auto 1.5rem;
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+
+    .resource-title {
+        font-size: 1.25rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+        color: #1e293b;
+    }
+
+    .resource-description {
+        color: #64748b;
+        line-height: 1.7;
+        margin-bottom: 1.5rem;
+        font-size: 0.95rem;
+    }
+
+    .resource-link {
+        color: #2563eb;
+        font-weight: 600;
+        text-decoration: none;
+        display: inline-flex;
+        align-items: center;
+        transition: all 0.3s ease;
+    }
+
+    .resource-link:hover {
+        color: #1d4ed8;
+        transform: translateX(5px);
+    }
+
+    /* Testimonials */
+    .testimonial-slider {
+        max-width: 800px;
+        margin: 0 auto;
+        position: relative;
+    }
+
+    .testimonial-card {
+        background: white;
+        border-radius: 20px;
+        padding: 3rem;
+        box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+        display: none;
+    }
+
+    .testimonial-card.active {
+        display: block;
+        animation: fadeIn 0.6s ease;
+    }
+
+    @keyframes fadeIn {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    .testimonial-text {
+        font-size: 1.25rem;
+        font-style: italic;
+        color: #475569;
+        line-height: 1.8;
+        margin-bottom: 2rem;
+        position: relative;
+    }
+
+    .testimonial-text::before {
+        content: '"';
+        font-size: 4rem;
+        color: #2563eb;
+        opacity: 0.2;
+        position: absolute;
+        top: -2rem;
+        left: -1rem;
+    }
+
+    .testimonial-author {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+    }
+
+    .author-avatar {
+        width: 60px;
+        height: 60px;
+        border-radius: 50%;
+        object-fit: cover;
+        border: 3px solid #e2e8f0;
+    }
+
+    .author-name {
+        font-size: 1.1rem;
+        font-weight: 700;
+        color: #1e293b;
+        margin-bottom: 0.25rem;
+    }
+
+    .author-role {
+        color: #64748b;
+        font-size: 0.9rem;
+        margin: 0;
+    }
+
+    .testimonial-nav {
+        display: flex;
+        justify-content: center;
+        gap: 1rem;
+        margin-top: 2rem;
+    }
+
+    .testimonial-prev,
+    .testimonial-next {
+        width: 50px;
+        height: 50px;
+        border-radius: 50%;
+        background: white;
+        border: 2px solid #e2e8f0;
+        color: #64748b;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+
+    .testimonial-prev:hover,
+    .testimonial-next:hover {
+        background: #2563eb;
+        border-color: #2563eb;
+        color: white;
+        transform: translateY(-3px);
+    }
+
+    /* CTA Section */
+    .cta-section {
+        background: linear-gradient(135deg, #1e293b 0%, #334155 100%);
+        color: white;
+        padding: 6rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .cta-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: url("data:image/svg+xml,%3Csvg width='100' height='100' viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M11 18c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm48 25c3.866 0 7-3.134 7-7s-3.134-7-7-7-7 3.134-7 7 3.134 7 7 7zm-43-7c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm63 31c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM34 90c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zm56-76c1.657 0 3-1.343 3-3s-1.343-3-3-3-3 1.343-3 3 1.343 3 3 3zM12 86c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm28-65c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm23-11c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-6 60c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm29 22c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zM32 63c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm57-13c2.76 0 5-2.24 5-5s-2.24-5-5-5-5 2.24-5 5 2.24 5 5 5zm-9-21c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM60 91c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM35 41c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2zM12 60c1.105 0 2-.895 2-2s-.895-2-2-2-2 .895-2 2 .895 2 2 2z' fill='%2360a5fa' fill-opacity='0.1' fill-rule='evenodd'/%3E%3C/svg%3E");
+    }
+
+    .cta-card {
+        position: relative;
+        z-index: 2;
+    }
+
+    .cta-title {
+        font-size: 2.5rem;
+        font-weight: 800;
+        margin-bottom: 1rem;
+        color: white;
+    }
+
+    .cta-description {
+        font-size: 1.25rem;
+        color: #cbd5e1;
+        margin-bottom: 2rem;
+        line-height: 1.7;
+    }
+
+    /* Background Colors */
+    .bg-light {
+        background-color: #f8fafc !important;
+    }
+
+    /* Responsive Design */
+    @media (max-width: 992px) {
+        .hero-title {
+            font-size: 2.75rem;
+        }
+        
+        .hero-stats {
+            flex-direction: column;
+            gap: 2rem;
+        }
+        
+        .section-padding {
+            padding: 4rem 0;
+        }
+        
+        .section-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 768px) {
+        .hero-section {
+            padding: 8rem 0 4rem;
+        }
+        
+        .hero-title {
+            font-size: 2.25rem;
+        }
+        
+        .hero-buttons {
+            flex-direction: column;
+        }
+        
+        .hero-buttons .btn {
+            width: 100%;
+            margin-bottom: 1rem;
+        }
+        
+        .project-links {
+            flex-direction: column;
+        }
+        
+        .cta-title {
+            font-size: 2rem;
+        }
+    }
+
+    @media (max-width: 576px) {
+        .hero-title {
+            font-size: 2rem;
+        }
+        
+        .hero-description {
+            font-size: 1.1rem;
+        }
+        
+        .section-title {
+            font-size: 1.75rem;
+        }
+        
+        .service-card,
+        .project-card,
+        .course-card,
+        .resource-card {
+            padding: 2rem 1.5rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    <!-- Hero Section -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="row align-items-center">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="hero-content">
+                        <h6 class="hero-subtitle">
+                            <i class="fas fa-rocket me-2"></i>Welcome to My Portfolio Website
+                        </h6>
+                        <h1 class="hero-title">
+                            Transforming <span class="text-gradient">Data</span> into 
+                            <span class="text-gradient">Intelligent Analytical Solutions</span>
+                        </h1>
+                        <p class="hero-description">
+                            I'm Robert Sichomba, BSc Physicist, MSc passionate Data Scientist and Exploration Geologist, Machine Learning and AI Researcher, 
+                            and Full-Stack Developer dedicated to creating impactful digital solutions 
+                            through data driven approaches and cutting edge technology methods.
+                        </p>
+                        <div class="hero-stats">
+                            <div class="stat-item" data-aos="fade-up" data-aos-delay="100">
+                                <h3 class="counter" data-target="8">0</h3>
+                                <p>Big Projects Worked On and Completed</p>
+                            </div>
+                            <div class="stat-item" data-aos="fade-up" data-aos-delay="200">
+                                <h3 class="counter" data-target="5">0</h3>
+                                <p>Years Working Experience Across Different Sectors</p>
+                            </div>
+                            <div class="stat-item" data-aos="fade-up" data-aos-delay="300">
+                                <h3 class="counter" data-target="100">0</h3>
+                                <p>Plus Client Satisfaction</p>
+                            </div>
+                        </div>
+        
+                    </div>
+                </div>
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="hero-image-wrapper">
+                        <img src="{% static 'images/robert_sichomba_profile.jpg' %}" alt="Data Science Illustration" class="hero-image">
+                        <div class="floating-elements">
+                            <div class="floating-element element-1">
+                                <i class="fas fa-database"></i>
+                            </div>
+                            <div class="floating-element element-2">
+                                <i class="fas fa-brain"></i>
+                            </div>
+                            <div class="floating-element element-3">
+                                <i class="fas fa-code"></i>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Services Section -->
+    <section class="services-section section-padding" data-aos="fade-up">
+        <div class="container">
+            <div class="section-header">
+                <h6 class="section-subtitle">What I Do</h6>
+                <h2 class="section-title">My Core Expertise Span</h2>
+                <p class="section-description">Comprehensive digital solutions across multiple domains</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h3 class="service-title">Data Analysis & Visualization</h3>
+                        <p class="service-description">
+                            Extract meaningful insights from complex datasets and present them through 
+                            interactive, clear visualizations for better decision-making.
+                        </p>
+                        <ul class="service-tech">
+                            <li>Python</li>
+                            <li>Pandas</li>
+                            <li>matplotlib</li>
+                            <li>TensorFlow and Scikit-learn</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-brain"></i>
+                        </div>
+                        <h3 class="service-title">Machine Learning & AI</h3>
+                        <p class="service-description">
+                            Develop intelligent models and algorithms to automate predictions, 
+                            classifications, and decision-making processes.
+                        </p>
+                        <ul class="service-tech">
+                            <li>TensorFlow</li>
+                            <li>Scikit-learn</li>
+                            <li>PyTorch</li>
+                            <li>OpenCV</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <h3 class="service-title">Web Development</h3>
+                        <p class="service-description">
+                            Build robust, scalable, and user-friendly web applications using 
+                            modern full-stack technologies.
+                        </p>
+                        <ul class="service-tech">
+                            <li>Django</li>
+                            <li>React</li>
+                            <li>JavaScript</li>
+                            <li>PostgreSQL</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-graduation-cap"></i>
+                        </div>
+                        <h3 class="service-title">Educational Technology</h3>
+                        <p class="service-description">
+                            Design and develop engaging courses and digital learning tools to 
+                            enhance educational experiences.
+                        </p>
+                        <ul class="service-tech">
+                            <li>Course Design</li>
+                            <li>LMS</li>
+                            <li>Interactive Tools</li>
+                            <li>E-learning</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-database"></i>
+                        </div>
+                        <h3 class="service-title">Database Management</h3>
+                        <p class="service-description">
+                            Design, implement, and optimize databases for efficient data 
+                            storage and retrieval.
+                        </p>
+                        <ul class="service-tech">
+                            <li>PostgreSQL</li>
+                            <li>MongoDB</li>
+                            <li>Redis</li>
+                            <li>MySQL</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="600">
+                    <div class="service-card">
+                        <div class="service-icon">
+                            <i class="fas fa-cloud"></i>
+                        </div>
+                        <h3 class="service-title">Cloud & Deployment</h3>
+                        <p class="service-description">
+                            Deploy and manage applications on cloud platforms for 
+                            scalability and reliability.
+                        </p>
+                        <ul class="service-tech">
+                            <li>AWS</li>
+                            <li>Docker</li>
+                            <li>render</li>
+                            <li>Kubernetes</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Projects -->
+    <section class="projects-section section-padding bg-light" data-aos="fade-up">
+        <div class="container">
+            <div class="section-header">
+                <h6 class="section-subtitle">I Work On Projects That Span Geophysics, Data Science, Modeling, Exploration Geology, and WebDev</h6>
+                <h2 class="section-title">My Featured Projects</h2>
+                <p class="section-description">Showcasing some of my work across different domains</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-lg-6" data-aos="fade-right">
+                    <div class="project-card featured">
+                        <div class="project-image">
+                            <img src="{% static 'images/project-geochemistry.jpg' %}" alt="Geochemical Data Analysis">
+                            <div class="project-badge">Data Science</div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Multivariate Geochemical Data Analysis</h3>
+                            <p class="project-description">
+                                Advanced ML models for analyzing geochemical datasets. Essential for 
+                                mineral prospectivity, environmental monitoring, and exploration insights.
+                            </p>
+                            <div class="project-tech">
+                                <span class="tech-tag">Python</span>
+                                <span class="tech-tag">Scikit-learn</span>
+                                <span class="tech-tag">Streamlit</span>
+                                <span class="tech-tag">Plotly</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="https://toolspy-ncpgx7tesmcocxxjbq2vtj.streamlit.app/" target="_blank" class="btn btn-primary">
+                                    <i class="fas fa-external-link-alt me-2"></i>Live Demo
+                                </a>
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fas fa-code me-2"></i>Case Study
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="col-lg-6" data-aos="fade-left">
+                    <div class="project-card">
+                        <div class="project-image">
+                            <img src="{% static 'images/project-education.jpg' %}" alt="Educational Platform">
+                            <div class="project-badge">Web Development</div>
+                        </div>
+                        <div class="project-content">
+                            <h3 class="project-title">Interactive Learning Platform On Github Pages</h3>
+                            <p class="project-description">
+                                A comprehensive educational platform with quizzes, progress tracking, 
+                                and interactive learning modules for STEM education using github pages.
+                            </p>
+                            <div class="project-tech">
+                                <span class="tech-tag">HTML</span>
+                                <span class="tech-tag">JavaScript</span>
+                                <span class="tech-tag">PostgreSQL</span>
+                                <span class="tech-tag">Firebase</span>
+                            </div>
+                            <div class="project-links">
+                                <a href="#" class="btn btn-primary">
+                                    <i class="fas fa-play-circle me-2"></i>View Project
+                                </a>
+                                <a href="#" class="btn btn-outline-primary">
+                                    <i class="fab fa-github me-2"></i>Source Code
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="{% url 'projects_list' %}" class="btn btn-outline-primary btn-lg">
+                    <i class="fas fa-arrow-right me-2"></i>View All Projects
+                </a>
+            </div>
+        </div>
+    </section>
+<!-- Courses Section -->
+<section class="courses-section section-padding" data-aos="fade-up">
+    <div class="container">
+        <div class="section-header">
+            <h6 class="section-subtitle">Learning Resources</h6>
+            <h2 class="section-title">Featured Courses</h2>
+            <p class="section-description">Master data science, mathematics, and physics from industry expert</p>
+        </div>
+        
+        {% if featured_courses %}
+        <div class="row g-4">
+            {% for course in featured_courses %}
+            <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="{% widthratio forloop.counter0 1 100 %}">
+                <div class="course-card">
+                    <div class="course-image">
+                        {% if course.thumbnail %}
+                        <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="img-fluid">
+                        {% else %}
+                        <div class="bg-gradient-primary d-flex align-items-center justify-content-center h-100 text-white">
+                            <i class="fas fa-graduation-cap fa-4x"></i>
+                        </div>
+                        {% endif %}
+                        <div class="course-level">
+                            {{ course.get_level_display }}
+                        </div>
+                        {% if course.is_free %}
+                        <span class="position-absolute top-0 end-0 m-3 badge bg-success">FREE</span>
+                        {% endif %}
+                    </div>
+                    <div class="course-content">
+                        <h4 class="course-title">{{ course.title }}</h4>
+                        <p class="course-description">{{ course.short_description }}</p>
+                        <div class="course-meta">
+                            <span><i class="fas fa-calendar me-1"></i> {{ course.start_date|date:"M Y" }}</span>
+                            <span><i class="fas fa-users me-1"></i> {{ course.enrolled_count }} students</span>
+                        </div>
+                        <div class="d-grid gap-2 mt-3">
+                            <a href="{% url 'course_detail' course.slug %}" class="btn btn-primary">
+                                <i class="fas fa-info-circle me-2"></i>Course Details
+                            </a>
+                            <a href="{% url 'course_enroll' course.slug %}" class="btn btn-outline-primary">
+                                <i class="fas fa-play-circle me-2"></i>Enroll Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <div class="text-center mt-5" data-aos="fade-up">
+            <a href="{% url 'courses_list' %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-list me-2"></i>View All Courses
+            </a>
+        </div>
+        {% else %}
+        <div class="text-center py-5">
+            <div class="display-1 text-muted mb-4">
+                <i class="fas fa-graduation-cap"></i>
+            </div>
+            <h4 class="text-muted">No Featured Courses Available</h4>
+            <p class="text-muted mb-4">Check back soon for new course offerings!</p>
+            <a href="{% url 'courses_list' %}" class="btn btn-primary">
+                <i class="fas fa-arrow-right me-2"></i>Browse Course Catalog
+            </a>
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+    <!-- Resources Grid -->
+    <section class="resources-section section-padding bg-light" data-aos="fade-up">
+        <div class="container">
+            <div class="section-header">
+                <h6 class="section-subtitle">Knowledge Hub</h6>
+                <h2 class="section-title">Explore Resources</h2>
+                <p class="section-description">Access curated learning materials and insights</p>
+            </div>
+            
+            <div class="row g-4">
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="100">
+                    <div class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <h4 class="resource-title">Books</h4>
+                        <p class="resource-description">
+                            Curated collection of influential reads on tech, data science, and personal growth.
+                        </p>
+                        <a href="{% url 'books_list' %}" class="resource-link">
+                            Explore Books <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="200">
+                    <div class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-newspaper"></i>
+                        </div>
+                        <h4 class="resource-title">Blog</h4>
+                        <p class="resource-description">
+                            Articles, tutorials, and insights on data science, web development, and tech trends.
+                        </p>
+                        <a href="{% url 'blog_list' %}" class="resource-link">
+                            Read Articles <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="300">
+                    <div class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <h4 class="resource-title">Notes</h4>
+                        <p class="resource-description">
+                            Quick insights, summaries, and learnings from studies and projects.
+                        </p>
+                        <a href="{% url 'notes_list' %}" class="resource-link">
+                            View Notes <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="400">
+                    <div class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <h4 class="resource-title">Meetings</h4>
+                        <p class="resource-description">
+                            Schedule and manage professional meetings, consultations, and collaborations.
+                        </p>
+                        <a href="{% url 'meetings_list' %}" class="resource-link">
+                            View Meetings <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="500">
+                    <div class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <h4 class="resource-title">Documents</h4>
+                        <p class="resource-description">
+                            Research papers, reports, and technical documentation for reference.
+                        </p>
+                        <a href="{% url 'documents_list' %}" class="resource-link">
+                            Access Docs <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+                
+                <div class="col-md-6 col-lg-4" data-aos="fade-up" data-aos-delay="600">
+                    <div class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-tools"></i>
+                        </div>
+                        <h4 class="resource-title">Tools & Resources</h4>
+                        <p class="resource-description">
+                            Useful tools, templates, and resources for developers and data scientists.
+                        </p>
+                        <a href="{% url 'about' %}" class="resource-link">
+                            Explore Tools <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Testimonials -->
+    <section class="testimonials-section section-padding" data-aos="fade-up">
+        <div class="container">
+            <div class="section-header">
+                <h6 class="section-subtitle">Testimonials</h6>
+                <h2 class="section-title">What Clients Say</h2>
+                <p class="section-description">Feedback from clients and collaborators</p>
+            </div>
+            
+            <div class="testimonial-slider">
+                <div class="testimonial-card active">
+                    <div class="testimonial-content">
+                        <p class="testimonial-text">
+                            "Robert's data analysis insights were instrumental in optimizing our 
+                            operational efficiency. His deliverables were professional, accurate, 
+                            and helped us make informed decisions."
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="{% static 'images/client1.jpg' %}" alt="Client" class="author-avatar">
+                        <div class="author-info">
+                            <h5 class="author-name">Thabo M.</h5>
+                            <p class="author-role">CEO, Tech Innovations Ltd.</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p class="testimonial-text">
+                            "The educational platform developed by Robert has transformed our 
+                            learning delivery. It's intuitive, robust, and significantly improved 
+                            student engagement."
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="{% static 'images/client2.jpg' %}" alt="Client" class="author-avatar">
+                        <div class="author-info">
+                            <h5 class="author-name">Dr. Lungu P.</h5>
+                            <p class="author-role">Academic Director</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="testimonial-card">
+                    <div class="testimonial-content">
+                        <p class="testimonial-text">
+                            "Working with Robert on our AI implementation was a game-changer. 
+                            His technical expertise and problem-solving skills delivered results 
+                            beyond our expectations."
+                        </p>
+                    </div>
+                    <div class="testimonial-author">
+                        <img src="{% static 'images/client3.jpg' %}" alt="Client" class="author-avatar">
+                        <div class="author-info">
+                            <h5 class="author-name">Sarah K.</h5>
+                            <p class="author-role">CTO, Data Insights Corp</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="testimonial-nav">
+                <button class="testimonial-prev">
+                    <i class="fas fa-chevron-left"></i>
+                </button>
+                <button class="testimonial-next">
+                    <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
+            
+            <div class="text-center mt-5" data-aos="fade-up">
+                <a href="{% url 'testimonials_list' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-comments me-2"></i>View All Testimonials
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- CTA Section -->
+    <section class="cta-section" data-aos="fade-up">
+        <div class="container">
+            <div class="cta-card">
+                <div class="row align-items-center">
+                    <div class="col-lg-8">
+                        <h2 class="cta-title">Ready to Start Your Project?</h2>
+                        <p class="cta-description">
+                            Let's discuss how my expertise in data science and web development 
+                            can bring your vision to life. Schedule a free consultation today.
+                        </p>
+                    </div>
+                    <div class="col-lg-4 text-lg-end">
+                        <a href="{% url 'contact' %}" class="btn btn-light btn-lg me-2">
+                            <i class="fas fa-calendar-check me-2"></i>Schedule Call
+                        </a>
+                        <a href="{% url 'projects_list' %}" class="btn btn-outline-light btn-lg">
+                            <i class="fas fa-briefcase me-2"></i>View Work
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://unpkg.com/aos@2.3.1/dist/aos.js"></script>
+<script>
+    // Initialize AOS
+    AOS.init({
+        duration: 800,
+        easing: 'ease-in-out',
+        once: true,
+        mirror: false
+    });
+    
+    // Counter Animation
+    function animateCounter() {
+        const counters = document.querySelectorAll('.counter');
+        counters.forEach(counter => {
+            const target = +counter.getAttribute('data-target');
+            const increment = target / 200;
+            let current = 0;
+            
+            const updateCounter = () => {
+                if (current < target) {
+                    current += increment;
+                    counter.innerText = Math.ceil(current);
+                    setTimeout(updateCounter, 10);
+                } else {
+                    counter.innerText = target;
+                }
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                if (entries[0].isIntersecting) {
+                    updateCounter();
+                    observer.unobserve(counter);
+                }
+            });
+            
+            observer.observe(counter);
+        });
+    }
+    
+    // Testimonial Slider
+    function initTestimonialSlider() {
+        const testimonials = document.querySelectorAll('.testimonial-card');
+        const prevBtn = document.querySelector('.testimonial-prev');
+        const nextBtn = document.querySelector('.testimonial-next');
+        let currentIndex = 0;
+        
+        function showTestimonial(index) {
+            testimonials.forEach((testimonial, i) => {
+                testimonial.classList.remove('active');
+                if (i === index) {
+                    testimonial.classList.add('active');
+                }
+            });
+        }
+        
+        // Auto rotate testimonials
+        let autoSlide = setInterval(() => {
+            currentIndex = (currentIndex + 1) % testimonials.length;
+            showTestimonial(currentIndex);
+        }, 5000);
+        
+        // Manual navigation
+        prevBtn.addEventListener('click', () => {
+            clearInterval(autoSlide);
+            currentIndex = (currentIndex - 1 + testimonials.length) % testimonials.length;
+            showTestimonial(currentIndex);
+            autoSlide = setInterval(() => {
+                currentIndex = (currentIndex + 1) % testimonials.length;
+                showTestimonial(currentIndex);
+            }, 5000);
+        });
+        
+        nextBtn.addEventListener('click', () => {
+            clearInterval(autoSlide);
+            currentIndex = (currentIndex + 1) % testimonials.length;
+            showTestimonial(currentIndex);
+            autoSlide = setInterval(() => {
+                currentIndex = (currentIndex + 1) % testimonials.length;
+                showTestimonial(currentIndex);
+            }, 5000);
+        });
+    }
+    
+    // Initialize everything when DOM is loaded
+    document.addEventListener('DOMContentLoaded', function() {
+        animateCounter();
+        initTestimonialSlider();
+        
+        // Floating elements animation
+        const floatingElements = document.querySelectorAll('.floating-element');
+        floatingElements.forEach((element, index) => {
+            element.style.animationDelay = `${index * 0.5}s`;
+        });
+    });
+</script>
+{% endblock %}

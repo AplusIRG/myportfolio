@@ -1,0 +1,526 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} - Frequently Asked Questions{% endblock %}
+
+{% block extra_css %}
+<style>
+    .faq-hero {
+        background: linear-gradient(135deg, var(--dark-grey) 0%, #1a1a2e 100%);
+        color: white;
+        padding: 100px 0 60px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .faq-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 40%;
+        height: 100%;
+        background: url('{% static "images/faq-pattern.svg" %}') repeat;
+        opacity: 0.1;
+    }
+    
+    .faq-container {
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 40px 0;
+    }
+    
+    .faq-category {
+        margin-bottom: 50px;
+    }
+    
+    .category-title {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: var(--dark-grey);
+        margin-bottom: 1.5rem;
+        padding-bottom: 0.5rem;
+        border-bottom: 3px solid var(--accent-blue);
+        display: inline-block;
+    }
+    
+    .faq-item {
+        margin-bottom: 15px;
+        border-radius: 10px;
+        overflow: hidden;
+        border: 1px solid #e0e0e0;
+        transition: all 0.3s ease;
+    }
+    
+    .faq-item:hover {
+        border-color: var(--accent-blue);
+        box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+    }
+    
+    .faq-question {
+        padding: 20px;
+        background: #f8f9fa;
+        cursor: pointer;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-weight: 600;
+        color: var(--dark-grey);
+        transition: all 0.3s ease;
+    }
+    
+    .faq-question:hover {
+        background: rgba(52, 152, 219, 0.05);
+    }
+    
+    .faq-question i {
+        transition: transform 0.3s ease;
+    }
+    
+    .faq-question[aria-expanded="true"] i {
+        transform: rotate(180deg);
+    }
+    
+    .faq-answer {
+        padding: 20px;
+        background: white;
+        border-top: 1px solid #e0e0e0;
+    }
+    
+    .faq-answer p:last-child {
+        margin-bottom: 0;
+    }
+    
+    .search-box {
+        position: relative;
+        margin-bottom: 30px;
+    }
+    
+    .search-box input {
+        width: 100%;
+        padding: 15px 20px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 1rem;
+        transition: all 0.3s ease;
+    }
+    
+    .search-box input:focus {
+        outline: none;
+        border-color: var(--accent-blue);
+        box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.2);
+    }
+    
+    .search-box i {
+        position: absolute;
+        right: 20px;
+        top: 50%;
+        transform: translateY(-50%);
+        color: #666;
+    }
+    
+    .faq-stats {
+        display: flex;
+        justify-content: center;
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+    
+    .stat-box {
+        text-align: center;
+        padding: 1.5rem;
+        border-radius: 10px;
+        background: white;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+        min-width: 150px;
+    }
+    
+    .stat-number {
+        font-size: 2rem;
+        font-weight: 700;
+        color: var(--accent-blue);
+        display: block;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .contact-cta {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 3rem;
+        text-align: center;
+        margin-top: 4rem;
+    }
+    
+    @media (max-width: 768px) {
+        .faq-stats {
+            flex-direction: column;
+            gap: 1rem;
+        }
+        
+        .contact-cta {
+            padding: 2rem;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="faq-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1>{{ course.title }}</h1>
+                <h3 class="mb-4" style="color: rgba(255,255,255,0.9);">Frequently Asked Questions</h3>
+                <p class="lead mb-0" style="color: rgba(255,255,255,0.8);">
+                    Find answers to common questions about the course, enrollment, and requirements
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Search Box -->
+<div class="container mt-4">
+    <div class="row">
+        <div class="col-lg-8 mx-auto">
+            <div class="search-box">
+                <input type="text" id="faq-search" placeholder="Search for questions...">
+                <i class="fas fa-search"></i>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Stats -->
+<div class="container">
+    <div class="faq-stats">
+        <div class="stat-box">
+            <span class="stat-number">{{ faqs.count }}</span>
+            <span class="stat-label">Questions</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-number">{{ course.enrolled_count }}</span>
+            <span class="stat-label">Students</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-number">24/7</span>
+            <span class="stat-label">Support</span>
+        </div>
+        <div class="stat-box">
+            <span class="stat-number">100%</span>
+            <span class="stat-label">Satisfaction</span>
+        </div>
+    </div>
+</div>
+
+<!-- FAQ Categories -->
+<div class="container">
+    <div class="faq-container">
+        <!-- General Questions -->
+        <div class="faq-category">
+            <h3 class="category-title">General Questions</h3>
+            <div class="accordion" id="generalAccordion">
+                {% for faq in faqs %}
+                {% if forloop.counter <= 5 %}
+                <div class="faq-item">
+                    <div class="faq-question" id="heading{{ faq.id }}" data-bs-toggle="collapse" 
+                         data-bs-target="#collapse{{ faq.id }}" aria-expanded="false" 
+                         aria-controls="collapse{{ faq.id }}">
+                        {{ faq.question }}
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="collapse{{ faq.id }}" class="collapse" 
+                         aria-labelledby="heading{{ faq.id }}" data-bs-parent="#generalAccordion">
+                        <div class="faq-answer">
+                            {{ faq.answer|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+            </div>
+        </div>
+        
+        <!-- Enrollment & Requirements -->
+        <div class="faq-category">
+            <h3 class="category-title">Enrollment & Requirements</h3>
+            <div class="accordion" id="enrollmentAccordion">
+                {% for faq in faqs %}
+                {% if forloop.counter > 5 and forloop.counter <= 10 %}
+                <div class="faq-item">
+                    <div class="faq-question" id="heading{{ faq.id }}" data-bs-toggle="collapse" 
+                         data-bs-target="#collapse{{ faq.id }}" aria-expanded="false" 
+                         aria-controls="collapse{{ faq.id }}">
+                        {{ faq.question }}
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="collapse{{ faq.id }}" class="collapse" 
+                         aria-labelledby="heading{{ faq.id }}" data-bs-parent="#enrollmentAccordion">
+                        <div class="faq-answer">
+                            {{ faq.answer|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                
+                <!-- Common enrollment questions if no specific FAQs -->
+                {% if faqs.count <= 5 %}
+                <div class="faq-item">
+                    <div class="faq-question" id="headingEnroll1" data-bs-toggle="collapse" 
+                         data-bs-target="#collapseEnroll1" aria-expanded="false" 
+                         aria-controls="collapseEnroll1">
+                        How do I enroll in this course?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="collapseEnroll1" class="collapse" 
+                         aria-labelledby="headingEnroll1" data-bs-parent="#enrollmentAccordion">
+                        <div class="faq-answer">
+                            <p>To enroll in this course:</p>
+                            <ol>
+                                <li>Create an account or log in to your existing account</li>
+                                <li>Navigate to the course page</li>
+                                <li>Click the "Enroll Now" button</li>
+                                <li>Complete the enrollment process (it's free!)</li>
+                                <li>Start learning immediately</li>
+                            </ol>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" id="headingEnroll2" data-bs-toggle="collapse" 
+                         data-bs-target="#collapseEnroll2" aria-expanded="false" 
+                         aria-controls="collapseEnroll2">
+                        What are the prerequisites for this course?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="collapseEnroll2" class="collapse" 
+                         aria-labelledby="headingEnroll2" data-bs-parent="#enrollmentAccordion">
+                        <div class="faq-answer">
+                            {{ course.prerequisites|linebreaks|default:"<p>This course is designed for beginners with no prior experience required. However, basic computer literacy and familiarity with high school mathematics will be helpful.</p>" }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        
+        <!-- Course Content & Schedule -->
+        <div class="faq-category">
+            <h3 class="category-title">Course Content & Schedule</h3>
+            <div class="accordion" id="contentAccordion">
+                {% for faq in faqs %}
+                {% if forloop.counter > 10 %}
+                <div class="faq-item">
+                    <div class="faq-question" id="heading{{ faq.id }}" data-bs-toggle="collapse" 
+                         data-bs-target="#collapse{{ faq.id }}" aria-expanded="false" 
+                         aria-controls="collapse{{ faq.id }}">
+                        {{ faq.question }}
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="collapse{{ faq.id }}" class="collapse" 
+                         aria-labelledby="heading{{ faq.id }}" data-bs-parent="#contentAccordion">
+                        <div class="faq-answer">
+                            {{ faq.answer|linebreaks }}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+                {% endfor %}
+                
+                <!-- Common content questions -->
+                {% if faqs.count <= 10 %}
+                <div class="faq-item">
+                    <div class="faq-question" id="headingContent1" data-bs-toggle="collapse" 
+                         data-bs-target="#collapseContent1" aria-expanded="false" 
+                         aria-controls="collapseContent1">
+                        What is the course schedule?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="collapseContent1" class="collapse" 
+                         aria-labelledby="headingContent1" data-bs-parent="#contentAccordion">
+                        <div class="faq-answer">
+                            <p>The course runs from {{ course.start_date|date:"F j, Y" }} to {{ course.end_date|date:"F j, Y" }}.</p>
+                            <p>{{ course.schedule_note|default:"New content is released weekly, and you can learn at your own pace. Live sessions are scheduled as per the course calendar." }}</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="faq-item">
+                    <div class="faq-question" id="headingContent2" data-bs-toggle="collapse" 
+                         data-bs-target="#collapseContent2" aria-expanded="false" 
+                         aria-controls="collapseContent2">
+                        Can I access the course materials after completion?
+                        <i class="fas fa-chevron-down"></i>
+                    </div>
+                    <div id="collapseContent2" class="collapse" 
+                         aria-labelledby="headingContent2" data-bs-parent="#contentAccordion">
+                        <div class="faq-answer">
+                            <p>Yes! Once you enroll in the course, you'll have lifetime access to all course materials, including:</p>
+                            <ul>
+                                <li>Video lectures</li>
+                                <li>Downloadable resources</li>
+                                <li>Code examples</li>
+                                <li>Assignments and solutions</li>
+                                <li>Course updates</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Contact CTA -->
+<div class="container">
+    <div class="contact-cta">
+        <h3 class="mb-3">Still have questions?</h3>
+        <p class="mb-4">Can't find the answer you're looking for? Please contact our support team.</p>
+        <div class="d-flex flex-wrap gap-3 justify-content-center">
+            <a href="{% url 'contact' %}" class="btn btn-primary btn-lg">
+                <i class="fas fa-envelope me-2"></i> Contact Support
+            </a>
+            <a href="{% url 'course_team' course.slug %}" class="btn btn-outline-primary btn-lg">
+                <i class="fas fa-users me-2"></i> Meet the Instructors
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Course
+                </a>
+                
+                <div class="btn-group">
+                    <a href="{% url 'course_schedule' course.slug %}" class="btn btn-outline-primary">
+                        <i class="fas fa-calendar-alt me-2"></i> Schedule
+                    </a>
+                    {% if is_enrolled %}
+                    <a href="{% url 'course_dashboard' course.slug %}" class="btn btn-primary">
+                        <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // FAQ search functionality
+    const searchInput = document.getElementById('faq-search');
+    const faqItems = document.querySelectorAll('.faq-item');
+    
+    searchInput.addEventListener('input', function() {
+        const searchTerm = this.value.toLowerCase().trim();
+        
+        faqItems.forEach(item => {
+            const question = item.querySelector('.faq-question').textContent.toLowerCase();
+            const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+            
+            if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                item.style.display = 'block';
+                // Highlight search term
+                if (searchTerm) {
+                    highlightText(item, searchTerm);
+                } else {
+                    removeHighlights(item);
+                }
+            } else {
+                item.style.display = 'none';
+            }
+        });
+    });
+    
+    // Highlight text function
+    function highlightText(element, term) {
+        const textNodes = getTextNodes(element);
+        textNodes.forEach(node => {
+            const span = document.createElement('span');
+            span.innerHTML = node.textContent.replace(
+                new RegExp(term, 'gi'),
+                match => `<mark class="bg-warning">${match}</mark>`
+            );
+            node.parentNode.replaceChild(span, node);
+        });
+    }
+    
+    function removeHighlights(element) {
+        const marks = element.querySelectorAll('mark');
+        marks.forEach(mark => {
+            const parent = mark.parentNode;
+            parent.replaceChild(document.createTextNode(mark.textContent), mark);
+            parent.normalize();
+        });
+    }
+    
+    function getTextNodes(element) {
+        const walker = document.createTreeWalker(
+            element,
+            NodeFilter.SHOW_TEXT,
+            null,
+            false
+        );
+        const textNodes = [];
+        let node;
+        while (node = walker.nextNode()) {
+            textNodes.push(node);
+        }
+        return textNodes;
+    }
+    
+    // Expand all / Collapse all buttons
+    const expandAllBtn = document.createElement('button');
+    expandAllBtn.className = 'btn btn-sm btn-outline-secondary';
+    expandAllBtn.innerHTML = '<i class="fas fa-expand me-2"></i> Expand All';
+    expandAllBtn.addEventListener('click', function() {
+        document.querySelectorAll('.collapse').forEach(collapse => {
+            new bootstrap.Collapse(collapse, { show: true });
+        });
+    });
+    
+    const collapseAllBtn = document.createElement('button');
+    collapseAllBtn.className = 'btn btn-sm btn-outline-secondary';
+    collapseAllBtn.innerHTML = '<i class="fas fa-compress me-2"></i> Collapse All';
+    collapseAllBtn.addEventListener('click', function() {
+        document.querySelectorAll('.collapse.show').forEach(collapse => {
+            new bootstrap.Collapse(collapse, { hide: true });
+        });
+    });
+    
+    const buttonGroup = document.createElement('div');
+    buttonGroup.className = 'd-flex gap-2 justify-content-center mt-4 mb-4';
+    buttonGroup.appendChild(expandAllBtn);
+    buttonGroup.appendChild(collapseAllBtn);
+    
+    document.querySelector('.faq-container').prepend(buttonGroup);
+    
+    // Auto-expand FAQ when searching
+    searchInput.addEventListener('input', function() {
+        if (this.value.trim()) {
+            document.querySelectorAll('.faq-item[style="display: block"] .collapse').forEach(collapse => {
+                new bootstrap.Collapse(collapse, { show: true });
+            });
+        }
+    });
+});
+</script>
+{% endblock %}

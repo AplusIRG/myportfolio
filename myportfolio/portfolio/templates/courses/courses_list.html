@@ -1,0 +1,1030 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Online Courses | Learn Data Science, ML & Web Development{% endblock %}
+
+{% block meta_description %}Browse our collection of online courses in data science, machine learning, web development, and more. Join our community of learners and enhance your skills with expert-led courses.{% endblock %}
+
+{% block extra_css %}
+<style>
+    :root {
+        --primary-gradient: linear-gradient(135deg, #3498db 0%, #2c3e50 100%);
+        --secondary-gradient: linear-gradient(135deg, #9b59b6 0%, #3498db 100%);
+        --success-gradient: linear-gradient(135deg, #2ecc71 0%, #27ae60 100%);
+        --warning-gradient: linear-gradient(135deg, #f39c12 0%, #e67e22 100%);
+    }
+
+    .course-catalog-hero {
+        background: var(--primary-gradient);
+        color: white;
+        padding: 120px 0 80px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .course-catalog-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 40%;
+        height: 100%;
+        background: url('{% static "images/pattern.svg" %}') repeat;
+        opacity: 0.1;
+    }
+    
+    .course-catalog-hero h1 {
+        font-size: 3.5rem;
+        font-weight: 800;
+        margin-bottom: 1.5rem;
+        background: linear-gradient(45deg, #fff, #ECF0F1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        background-clip: text;
+    }
+
+    .stats-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 1.5rem;
+        margin: 3rem 0;
+    }
+
+    .stat-card {
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 15px;
+        padding: 2rem;
+        text-align: center;
+        backdrop-filter: blur(10px);
+        border: 1px solid rgba(255, 255, 255, 0.2);
+        transition: transform 0.3s ease;
+    }
+
+    .stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .stat-number {
+        font-size: 3rem;
+        font-weight: 800;
+        margin-bottom: 0.5rem;
+        background: linear-gradient(45deg, #fff, #ecf0f1);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+    }
+
+    .stat-label {
+        font-size: 1rem;
+        opacity: 0.9;
+    }
+    
+    .filter-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 0.5rem;
+        justify-content: center;
+        margin: 2rem 0;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .filter-btn {
+        padding: 0.75rem 1.75rem;
+        border: 2px solid rgba(255, 255, 255, 0.3);
+        background: rgba(255, 255, 255, 0.1);
+        color: white;
+        border-radius: 25px;
+        font-weight: 600;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        backdrop-filter: blur(10px);
+    }
+    
+    .filter-btn:hover,
+    .filter-btn.active {
+        background: rgba(255, 255, 255, 0.2);
+        border-color: white;
+        transform: translateY(-2px);
+    }
+    
+    .course-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+        gap: 2rem;
+        margin: 3rem 0;
+    }
+    
+    .course-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+        transition: all 0.3s ease;
+        border: 2px solid transparent;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+    
+    .course-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        border-color: #3498db;
+    }
+
+    .course-card.featured {
+        border-color: #e74c3c;
+        box-shadow: 0 15px 35px rgba(231, 76, 60, 0.1);
+    }
+
+    .featured-badge {
+        position: absolute;
+        top: 15px;
+        right: 15px;
+        background: linear-gradient(45deg, #e74c3c, #c0392b);
+        color: white;
+        padding: 0.5rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+        box-shadow: 0 4px 15px rgba(231, 76, 60, 0.3);
+    }
+    
+    .course-image {
+        height: 200px;
+        width: 100%;
+        object-fit: cover;
+        position: relative;
+    }
+
+    .course-image-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        background: linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.7));
+    }
+    
+    .course-content {
+        padding: 1.5rem;
+        flex-grow: 1;
+        display: flex;
+        flex-direction: column;
+    }
+    
+    .course-badges {
+        display: flex;
+        gap: 0.5rem;
+        margin-bottom: 1rem;
+        flex-wrap: wrap;
+    }
+    
+    .course-badge {
+        padding: 0.4rem 1rem;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        display: inline-flex;
+        align-items: center;
+        gap: 0.3rem;
+    }
+    
+    .badge-level-beginner { background: linear-gradient(45deg, #2ecc71, #27ae60); color: white; }
+    .badge-level-intermediate { background: linear-gradient(45deg, #f39c12, #e67e22); color: white; }
+    .badge-level-advanced { background: linear-gradient(45deg, #e74c3c, #c0392b); color: white; }
+    .badge-status-upcoming { background: linear-gradient(45deg, #3498db, #2980b9); color: white; }
+    .badge-status-active { background: linear-gradient(45deg, #2ecc71, #27ae60); color: white; }
+    .badge-status-completed { background: linear-gradient(45deg, #95a5a6, #7f8c8d); color: white; }
+    
+    .course-title {
+        font-size: 1.4rem;
+        font-weight: 700;
+        margin-bottom: 0.75rem;
+        line-height: 1.4;
+        color: #2c3e50;
+    }
+    
+    .course-description {
+        color: #666;
+        font-size: 0.95rem;
+        line-height: 1.6;
+        margin-bottom: 1.5rem;
+        flex-grow: 1;
+    }
+    
+    .course-meta {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        margin-top: auto;
+        padding-top: 1rem;
+        border-top: 1px solid #eee;
+    }
+    
+    .course-stats {
+        display: flex;
+        gap: 1rem;
+        font-size: 0.9rem;
+        color: #666;
+    }
+    
+    .course-stats span {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+
+    .course-price {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #2c3e50;
+    }
+
+    .course-price.free {
+        color: #27ae60;
+    }
+
+    .course-actions {
+        display: flex;
+        gap: 0.5rem;
+        margin-top: 1rem;
+    }
+
+    .empty-state {
+        text-align: center;
+        padding: 6rem 2rem;
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        margin: 3rem 0;
+    }
+    
+    .empty-state i {
+        font-size: 5rem;
+        color: #bdc3c7;
+        margin-bottom: 1.5rem;
+    }
+
+    .empty-state h3 {
+        color: #2c3e50;
+        margin-bottom: 1rem;
+    }
+
+    .empty-state p {
+        color: #7f8c8d;
+        max-width: 600px;
+        margin: 0 auto 2rem;
+    }
+
+    .learning-path-section {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        padding: 5rem 0;
+        margin: 5rem 0;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .learning-path-section::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 5px;
+        background: var(--primary-gradient);
+    }
+
+    .path-step {
+        display: flex;
+        align-items: center;
+        margin: 2rem 0;
+        position: relative;
+        padding: 2rem;
+        background: white;
+        border-radius: 15px;
+        box-shadow: 0 5px 20px rgba(0,0,0,0.05);
+        transition: transform 0.3s ease;
+    }
+
+    .path-step:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    }
+
+    .path-step-number {
+        width: 60px;
+        height: 60px;
+        background: var(--primary-gradient);
+        color: white;
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-right: 2rem;
+        flex-shrink: 0;
+    }
+
+    @media (max-width: 768px) {
+        .course-catalog-hero h1 {
+            font-size: 2.5rem;
+        }
+        
+        .course-grid {
+            grid-template-columns: 1fr;
+            gap: 1.5rem;
+        }
+
+        .stats-grid {
+            grid-template-columns: repeat(2, 1fr);
+        }
+
+        .path-step {
+            flex-direction: column;
+            text-align: center;
+            padding: 1.5rem;
+        }
+
+        .path-step-number {
+            margin-right: 0;
+            margin-bottom: 1rem;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .stats-grid {
+            grid-template-columns: 1fr;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="course-catalog-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1>Master In-Demand Skills</h1>
+                <p class="lead mb-4" style="color: rgba(255,255,255,0.9);">
+                    Transform your career with our expert-led courses. Learn cutting-edge technologies, 
+                    build real-world projects, and join a global community of learners.
+                </p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                    <a href="#featured-courses" class="btn btn-primary btn-lg px-4 py-3">
+                        <i class="fas fa-graduation-cap me-2"></i> Start Learning
+                    </a>
+                    <a href="#learning-path" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="fas fa-map-signs me-2"></i> View Learning Path
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Stats Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">{{ total_courses }}+</div>
+                <div class="stat-label">Courses Available</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">{{ total_students }}+</div>
+                <div class="stat-label">Active Students</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">98%</div>
+                <div class="stat-label">Satisfaction Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Learning Support</div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Filter Section -->
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row">
+            <div class="col-12">
+                <h3 class="text-center mb-4">Find Your Perfect Course</h3>
+                <p class="text-center text-muted mb-4">Filter by category, level, or start date</p>
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">All Courses</button>
+                    <button class="filter-btn" data-filter="data-science">
+                        <i class="fas fa-chart-line me-2"></i> Data Science
+                    </button>
+                    <button class="filter-btn" data-filter="web-dev">
+                        <i class="fas fa-code me-2"></i> Web Development
+                    </button>
+                    <button class="filter-btn" data-filter="ml">
+                        <i class="fas fa-robot me-2"></i> Machine Learning
+                    </button>
+                    <button class="filter-btn" data-filter="beginner">Beginner</button>
+                    <button class="filter-btn" data-filter="intermediate">Intermediate</button>
+                    <button class="filter-btn" data-filter="advanced">Advanced</button>
+                    <button class="filter-btn" data-filter="active">Active Now</button>
+                    <button class="filter-btn" data-filter="upcoming">Starting Soon</button>
+                    <button class="filter-btn" data-filter="free">Free Courses</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Featured Courses -->
+{% if featured_courses %}
+<section id="featured-courses" class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title">Featured Courses</h2>
+                <p class="text-muted">Top-rated courses handpicked by our instructors</p>
+            </div>
+        </div>
+        
+        <div class="course-grid">
+            {% for course in featured_courses %}
+            <div class="course-card featured" 
+                 data-category="{{ course.category }}" 
+                 data-level="{{ course.level }}" 
+                 data-status="{{ course.status }}">
+                <span class="featured-badge">
+                    <i class="fas fa-star me-1"></i> Featured
+                </span>
+                
+                {% if course.banner_image %}
+                <img src="{{ course.banner_image.url }}" alt="{{ course.title }}" class="course-image">
+                <div class="course-image-overlay"></div>
+                {% else %}
+                <div class="course-image bg-dark d-flex align-items-center justify-content-center">
+                    <i class="fas fa-graduation-cap fa-4x text-white"></i>
+                </div>
+                {% endif %}
+                
+                <div class="course-content">
+                    <div class="course-badges">
+                        <span class="course-badge badge-level-{{ course.level }}">
+                            <i class="fas fa-signal me-1"></i>{{ course.get_level_display }}
+                        </span>
+                        <span class="course-badge badge-status-{{ course.status }}">
+                            {{ course.get_status_display }}
+                        </span>
+                        {% if course.is_free %}
+                        <span class="course-badge" style="background: linear-gradient(45deg, #27ae60, #219653); color: white;">
+                            <i class="fas fa-gift me-1"></i> Free
+                        </span>
+                        {% endif %}
+                    </div>
+                    
+                    <h3 class="course-title">{{ course.title }}</h3>
+                    <p class="course-description">{{ course.short_description|truncatewords:30 }}</p>
+                    
+                    <div class="course-meta">
+                        <div class="course-stats">
+                            <span title="Enrolled Students">
+                                <i class="fas fa-users"></i> {{ course.enrolled_count }}
+                            </span>
+                            <span title="Modules">
+                                <i class="fas fa-book"></i> {{ course.modules.count }}
+                            </span>
+                            <span title="Duration">
+                                <i class="fas fa-clock"></i> {{ course.duration }}
+                            </span>
+                        </div>
+                        <div class="course-price {% if course.is_free %}free{% endif %}">
+                            {% if course.is_free %}FREE{% else %}${{ course.price }}{% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="course-actions">
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-primary flex-grow-1">
+                            <i class="fas fa-eye me-2"></i> View Details
+                        </a>
+                        {% if user.is_authenticated and user not in course.enrolled_students %}
+                        <a href="{% url 'course_enroll' course.slug %}" class="btn btn-success">
+                            <i class="fas fa-user-plus me-2"></i> Enroll
+                        </a>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- All Courses -->
+<section id="all-courses" class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title">Browse All Courses</h2>
+                <p class="text-muted">Find the perfect course for your learning journey</p>
+            </div>
+        </div>
+        
+        {% if courses %}
+        <div class="course-grid">
+            {% for course in courses %}
+            <div class="course-card" 
+                 data-category="{{ course.category }}" 
+                 data-level="{{ course.level }}" 
+                 data-status="{{ course.status }}"
+                 data-price="{% if course.is_free %}free{% else %}paid{% endif %}">
+                
+                {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" alt="{{ course.title }}" class="course-image">
+                <div class="course-image-overlay"></div>
+                {% else %}
+                <div class="course-image bg-dark d-flex align-items-center justify-content-center">
+                    <i class="fas fa-graduation-cap fa-3x text-white"></i>
+                </div>
+                {% endif %}
+                
+                <div class="course-content">
+                    <div class="course-badges">
+                        <span class="course-badge badge-level-{{ course.level }}">
+                            <i class="fas fa-signal me-1"></i>{{ course.get_level_display }}
+                        </span>
+                        <span class="course-badge badge-status-{{ course.status }}">
+                            {{ course.get_status_display }}
+                        </span>
+                    </div>
+                    
+                    <h3 class="course-title">{{ course.title }}</h3>
+                    <p class="course-description">{{ course.short_description|truncatewords:25 }}</p>
+                    
+                    <div class="course-meta">
+                        <div class="course-stats">
+                            <span title="Enrolled Students">
+                                <i class="fas fa-users"></i> {{ course.enrolled_count }}
+                            </span>
+                            <span title="Start Date">
+                                <i class="fas fa-calendar-alt"></i> {{ course.start_date|date:"M Y" }}
+                            </span>
+                        </div>
+                        <div class="course-price {% if course.is_free %}free{% endif %}">
+                            {% if course.is_free %}FREE{% else %}${{ course.price }}{% endif %}
+                        </div>
+                    </div>
+                    
+                    <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary w-100 mt-3">
+                        Learn More <i class="fas fa-arrow-right ms-2"></i>
+                    </a>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        
+        <!-- Pagination -->
+        {% if is_paginated %}
+        <nav aria-label="Course pagination" class="mt-5">
+            <ul class="pagination justify-content-center">
+                {% if page_obj.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1" aria-label="First">
+                        <i class="fas fa-angle-double-left"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.previous_page_number }}" aria-label="Previous">
+                        <i class="fas fa-angle-left"></i>
+                    </a>
+                </li>
+                {% endif %}
+                
+                {% for num in page_obj.paginator.page_range %}
+                    {% if page_obj.number == num %}
+                    <li class="page-item active"><a class="page-link" href="#">{{ num }}</a></li>
+                    {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                    <li class="page-item"><a class="page-link" href="?page={{ num }}">{{ num }}</a></li>
+                    {% endif %}
+                {% endfor %}
+                
+                {% if page_obj.has_next %}
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.next_page_number }}" aria-label="Next">
+                        <i class="fas fa-angle-right"></i>
+                    </a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}" aria-label="Last">
+                        <i class="fas fa-angle-double-right"></i>
+                    </a>
+                </li>
+                {% endif %}
+            </ul>
+        </nav>
+        {% endif %}
+        
+        {% else %}
+        <div class="empty-state">
+            <i class="fas fa-graduation-cap"></i>
+            <h3>No courses available at the moment</h3>
+            <p class="text-muted mb-4">We're working on new content. Check back soon for exciting new courses!</p>
+            {% if user.is_authenticated %}
+            <a href="{% url 'contact' %}" class="btn btn-primary">
+                <i class="fas fa-envelope me-2"></i> Request a Course
+            </a>
+            {% endif %}
+        </div>
+        {% endif %}
+    </div>
+</section>
+
+<!-- Learning Path Section -->
+<section id="learning-path" class="learning-path-section">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title">Your Learning Journey</h2>
+                <p class="text-muted">Follow this structured path to master new skills</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-lg-10 mx-auto">
+                <div class="path-step">
+                    <div class="path-step-number">1</div>
+                    <div>
+                        <h4>Foundational Skills</h4>
+                        <p class="text-muted mb-0">Start with beginner-friendly courses to build your foundation in programming, data analysis, or web development basics.</p>
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary">View Beginner Courses</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="path-step">
+                    <div class="path-step-number">2</div>
+                    <div>
+                        <h4>Intermediate Projects</h4>
+                        <p class="text-muted mb-0">Apply your knowledge to real-world projects and build your portfolio with hands-on experience.</p>
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary">View Project Courses</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="path-step">
+                    <div class="path-step-number">3</div>
+                    <div>
+                        <h4>Advanced Specializations</h4>
+                        <p class="text-muted mb-0">Deep dive into specialized topics like machine learning, cloud computing, or advanced web frameworks.</p>
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary">View Advanced Courses</a>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="path-step">
+                    <div class="path-step-number">4</div>
+                    <div>
+                        <h4>Career Preparation</h4>
+                        <p class="text-muted mb-0">Prepare for job interviews, build your professional network, and showcase your skills to employers.</p>
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-primary">Career Resources</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Testimonials Section -->
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title">Student Success Stories</h2>
+                <p class="text-muted">Hear from our students around the world</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 60px; height: 60px;">
+                                <span class="text-white h5 mb-0">JS</span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">John Smith</h6>
+                                <small class="text-muted">Data Scientist @ TechCorp</small>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text">"The Data Science Bootcamp transformed my career. I went from a marketing role to a data scientist position in just 6 months. The projects were industry-relevant and the mentorship was exceptional."</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle bg-success d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 60px; height: 60px;">
+                                <span class="text-white h5 mb-0">SR</span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Sarah Rodriguez</h6>
+                                <small class="text-muted">Full-Stack Developer</small>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star-half-alt"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text">"As a complete beginner, the web development courses gave me the confidence to start freelancing. The step-by-step approach and real-world projects were exactly what I needed to build my portfolio."</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="col-md-4 mb-4">
+                <div class="card h-100 border-0 shadow-sm hover-shadow">
+                    <div class="card-body">
+                        <div class="d-flex align-items-center mb-3">
+                            <div class="rounded-circle bg-warning d-flex align-items-center justify-content-center me-3" 
+                                 style="width: 60px; height: 60px;">
+                                <span class="text-white h5 mb-0">MK</span>
+                            </div>
+                            <div>
+                                <h6 class="mb-0">Michael Kim</h6>
+                                <small class="text-muted">ML Engineer @ AI Startup</small>
+                                <div class="text-warning">
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                    <i class="fas fa-star"></i>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="card-text">"The Machine Learning Masterclass provided depth and practical experience I couldn't find elsewhere. The capstone project directly led to my current position as an ML engineer."</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- CTA Section -->
+<section class="py-5 bg-dark text-white text-center">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="mb-4">Start Your Learning Journey Today</h2>
+                <p class="lead mb-4">
+                    Join thousands of students who have transformed their careers with our courses. 
+                    Whether you're starting from scratch or leveling up your skills, we have the perfect path for you.
+                </p>
+                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                    {% if user.is_authenticated %}
+                    <a href="{% url 'my_courses' %}" class="btn btn-primary btn-lg px-4 py-3">
+                        <i class="fas fa-rocket me-2"></i> Continue Learning
+                    </a>
+                    <a href="#featured-courses" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="fas fa-graduation-cap me-2"></i> Browse Courses
+                    </a>
+                    {% else %}
+                    <a href="{% url 'signup' %}" class="btn btn-primary btn-lg px-4 py-3">
+                        <i class="fas fa-user-plus me-2"></i> Start Free Trial
+                    </a>
+                    <a href="{% url 'login' %}" class="btn btn-outline-light btn-lg px-4 py-3">
+                        <i class="fas fa-sign-in-alt me-2"></i> Login
+                    </a>
+                    {% endif %}
+                </div>
+                <p class="mt-4 text-muted">
+                    <small>7-day free trial • Cancel anytime • Access to all beginner courses</small>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Enhanced Filter Functionality
+    const filterButtons = document.querySelectorAll('.filter-btn');
+    const courseCards = document.querySelectorAll('.course-card');
+    
+    filterButtons.forEach(button => {
+        button.addEventListener('click', function() {
+            // Remove active class from all buttons
+            filterButtons.forEach(btn => btn.classList.remove('active'));
+            // Add active class to clicked button
+            this.classList.add('active');
+            
+            const filterValue = this.dataset.filter;
+            
+            // Filter courses with animation
+            courseCards.forEach(card => {
+                card.style.opacity = '0.5';
+                card.style.transform = 'scale(0.95)';
+                
+                setTimeout(() => {
+                    if (filterValue === 'all') {
+                        card.style.display = 'flex';
+                    } else {
+                        const category = card.dataset.category;
+                        const level = card.dataset.level;
+                        const status = card.dataset.status;
+                        const price = card.dataset.price;
+                        
+                        if (filterValue === category || 
+                            filterValue === level || 
+                            filterValue === status || 
+                            filterValue === price) {
+                            card.style.display = 'flex';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    }
+                    
+                    card.style.opacity = '1';
+                    card.style.transform = 'scale(1)';
+                }, 200);
+            });
+        });
+    });
+    
+    // Smooth scroll for anchor links
+    document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', function(e) {
+            e.preventDefault();
+            const targetId = this.getAttribute('href');
+            if (targetId === '#') return;
+            
+            const targetElement = document.querySelector(targetId);
+            if (targetElement) {
+                window.scrollTo({
+                    top: targetElement.offsetTop - 100,
+                    behavior: 'smooth'
+                });
+            }
+        });
+    });
+    
+    // Animate elements on scroll
+    const observerOptions = {
+        threshold: 0.1,
+        rootMargin: '0px 0px -50px 0px'
+    };
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+            if (entry.isIntersecting) {
+                entry.target.classList.add('animate-in');
+            }
+        });
+    }, observerOptions);
+    
+    // Observe course cards and path steps
+    document.querySelectorAll('.course-card, .path-step').forEach(el => {
+        observer.observe(el);
+    });
+    
+    // Real-time course counter animation
+    function animateCounter(element, start, end, duration) {
+        let startTimestamp = null;
+        const step = (timestamp) => {
+            if (!startTimestamp) startTimestamp = timestamp;
+            const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+            const value = Math.floor(progress * (end - start) + start);
+            element.textContent = value + "+";
+            if (progress < 1) {
+                window.requestAnimationFrame(step);
+            }
+        };
+        window.requestAnimationFrame(step);
+    }
+    
+    // Initialize counters on page load
+    document.querySelectorAll('.stat-number').forEach(stat => {
+        const currentValue = parseInt(stat.textContent);
+        stat.textContent = "0+";
+        setTimeout(() => {
+            animateCounter(stat, 0, currentValue, 2000);
+        }, 500);
+    });
+    
+    // Search functionality
+    const searchInput = document.createElement('input');
+    searchInput.type = 'search';
+    searchInput.placeholder = 'Search courses...';
+    searchInput.className = 'form-control w-100 mb-4';
+    searchInput.style.maxWidth = '500px';
+    searchInput.style.margin = '0 auto';
+    
+    const filterSection = document.querySelector('.filter-buttons');
+    if (filterSection) {
+        filterSection.parentElement.insertBefore(searchInput, filterSection);
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            courseCards.forEach(card => {
+                const title = card.querySelector('.course-title').textContent.toLowerCase();
+                const description = card.querySelector('.course-description').textContent.toLowerCase();
+                
+                if (title.includes(searchTerm) || description.includes(searchTerm)) {
+                    card.style.display = 'flex';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+    }
+    
+    // Add to wishlist functionality
+    document.querySelectorAll('.course-card').forEach(card => {
+        const wishlistBtn = document.createElement('button');
+        wishlistBtn.className = 'btn btn-sm btn-outline-danger position-absolute';
+        wishlistBtn.style.top = '15px';
+        wishlistBtn.style.left = '15px';
+        wishlistBtn.style.zIndex = '3';
+        wishlistBtn.innerHTML = '<i class="far fa-heart"></i>';
+        
+        wishlistBtn.addEventListener('click', function(e) {
+            e.stopPropagation();
+            const icon = this.querySelector('i');
+            if (icon.classList.contains('far')) {
+                icon.classList.remove('far');
+                icon.classList.add('fas');
+                this.classList.remove('btn-outline-danger');
+                this.classList.add('btn-danger');
+                // In production, make API call to add to wishlist
+            } else {
+                icon.classList.remove('fas');
+                icon.classList.add('far');
+                this.classList.remove('btn-danger');
+                this.classList.add('btn-outline-danger');
+                // In production, make API call to remove from wishlist
+            }
+        });
+        
+        card.querySelector('.course-image').appendChild(wishlistBtn);
+    });
+});
+</script>
+
+<style>
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.animate-in {
+    animation: fadeInUp 0.6s ease forwards;
+}
+
+.hover-shadow {
+    transition: all 0.3s ease;
+}
+
+.hover-shadow:hover {
+    box-shadow: 0 15px 30px rgba(0,0,0,0.15) !important;
+    transform: translateY(-5px);
+}
+
+.course-card, .path-step {
+    opacity: 0;
+}
+
+.stat-number {
+    transition: all 0.3s ease;
+}
+</style>
+{% endblock %}

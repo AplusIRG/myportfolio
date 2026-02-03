@@ -1,0 +1,270 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} - Dashboard{% endblock %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">
+        <!-- Sidebar -->
+        <div class="col-lg-3 col-xl-2 d-none d-lg-block">
+            <div class="sticky-top" style="top: 70px;">
+                <div class="card mb-3">
+                    <div class="card-body">
+                        <h6 class="text-uppercase text-muted mb-3">Course Progress</h6>
+                        <div class="progress-circle mx-auto mb-3" data-percentage="{{ progress_percentage }}">
+                            <svg>
+                                <circle class="progress-circle-bg" cx="60" cy="60" r="50"></circle>
+                                <circle class="progress-circle-fill" cx="60" cy="60" r="50"></circle>
+                            </svg>
+                            <div class="progress-circle-text">{{ progress_percentage|floatformat:0 }}%</div>
+                        </div>
+                        <p class="text-center mb-0">{{ enrollment.completed_modules|length }}/{{ modules|length }} modules completed</p>
+                    </div>
+                </div>
+                
+                <div class="card">
+                    <div class="card-body">
+                        <h6 class="text-uppercase text-muted mb-3">Quick Links</h6>
+                        <ul class="nav flex-column">
+                            <li class="nav-item">
+                                <a class="nav-link" href="#current-module">
+                                    <i class="fas fa-play-circle me-2"></i> Current Module
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#resources">
+                                    <i class="fas fa-folder-open me-2"></i> Course Resources
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#assignments">
+                                    <i class="fas fa-tasks me-2"></i> Assignments
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="#discussions">
+                                    <i class="fas fa-comments me-2"></i> Discussions
+                                </a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="{% url 'course_schedule' course.slug %}">
+                                    <i class="fas fa-calendar-alt me-2"></i> Schedule
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Main Content -->
+        <div class="col-lg-9 col-xl-10">
+            <!-- Header -->
+            <div class="d-flex justify-content-between align-items-center mb-4">
+                <div>
+                    <h1 class="h3 mb-0">{{ course.title }}</h1>
+                    <p class="text-muted mb-0">{{ course.subtitle }}</p>
+                </div>
+                <div class="d-flex gap-2">
+                    {% if next_module %}
+                    <a href="#module{{ next_module.id }}" class="btn btn-primary">
+                        <i class="fas fa-forward me-2"></i> Continue Learning
+                    </a>
+                    {% endif %}
+                    <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary">
+                        <i class="fas fa-info-circle me-2"></i> Course Info
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Progress Stats -->
+            <div class="row mb-4">
+                <div class="col-md-3">
+                    <div class="card border-0 bg-primary bg-opacity-10">
+                        <div class="card-body text-center">
+                            <h2 class="mb-0">{{ modules|length }}</h2>
+                            <p class="text-muted mb-0">Total Modules</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 bg-success bg-opacity-10">
+                        <div class="card-body text-center">
+                            <h2 class="mb-0">{{ enrollment.completed_modules|length }}</h2>
+                            <p class="text-muted mb-0">Completed</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 bg-warning bg-opacity-10">
+                        <div class="card-body text-center">
+                            <h2 class="mb-0">{{ enrollment.in_progress_modules|length|default:0 }}</h2>
+                            <p class="text-muted mb-0">In Progress</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-3">
+                    <div class="card border-0 bg-info bg-opacity-10">
+                        <div class="card-body text-center">
+                            <h2 class="mb-0">{{ enrollment.remaining_modules|length }}</h2>
+                            <p class="text-muted mb-0">Remaining</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Current Module -->
+            {% if next_module %}
+            <div class="card mb-4" id="current-module">
+                <div class="card-header bg-primary text-white">
+                    <h5 class="mb-0">
+                        <i class="fas fa-play-circle me-2"></i> Current Module
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <h4>{{ next_module.title }}</h4>
+                    <p class="text-muted">{{ next_module.description|truncatewords:50 }}</p>
+                    
+                    <div class="d-flex flex-wrap gap-2 mb-3">
+                        {% if next_module.slides_url %}
+                        <a href="{{ next_module.slides_url }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                            <i class="fas fa-file-powerpoint me-1"></i> Slides
+                        </a>
+                        {% endif %}
+                        
+                        {% if next_module.video_url %}
+                        <a href="{{ next_module.video_url }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                            <i class="fas fa-video me-1"></i> Video
+                        </a>
+                        {% endif %}
+                        
+                        {% if next_module.code_url %}
+                        <a href="{{ next_module.code_url }}" class="btn btn-outline-primary btn-sm" target="_blank">
+                            <i class="fas fa-code me-1"></i> Code
+                        </a>
+                        {% endif %}
+                    </div>
+                    
+                    <button class="btn btn-primary" data-module-id="{{ next_module.id }}" data-course-slug="{{ course.slug }}">
+                        <i class="fas fa-check me-2"></i> Mark as Complete
+                    </button>
+                </div>
+            </div>
+            {% endif %}
+            
+            <!-- All Modules -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">
+                        <i class="fas fa-list-ul me-2"></i> Course Modules
+                    </h5>
+                </div>
+                <div class="card-body">
+                    <div class="list-group list-group-flush">
+                        {% for module_data in modules %}
+                        {% with module=module_data.module %}
+                        <div class="list-group-item">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    <div class="form-check d-inline-block me-3">
+                                        <input class="form-check-input module-complete-checkbox" 
+                                               type="checkbox" 
+                                               data-module-id="{{ module.id }}"
+                                               data-course-slug="{{ course.slug }}"
+                                               id="module{{ module.id }}"
+                                               {% if module_data.is_completed %}checked{% endif %}>
+                                        <label class="form-check-label" for="module{{ module.id }}"></label>
+                                    </div>
+                                    
+                                    <h6 class="mb-0 d-inline">{{ module.title }}</h6>
+                                    {% if module.date %}
+                                    <small class="text-muted ms-3">{{ module.date|date:"M j, Y" }}</small>
+                                    {% endif %}
+                                </div>
+                                
+                                <div class="dropdown">
+                                    <button class="btn btn-sm btn-outline-secondary dropdown-toggle" type="button" 
+                                            data-bs-toggle="dropdown">
+                                        <i class="fas fa-ellipsis-v"></i>
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        {% if module.slides_url %}
+                                        <li><a class="dropdown-item" href="{{ module.slides_url }}" target="_blank">
+                                            <i class="fas fa-file-powerpoint me-2"></i> Slides
+                                        </a></li>
+                                        {% endif %}
+                                        
+                                        {% if module.video_url %}
+                                        <li><a class="dropdown-item" href="{{ module.video_url }}" target="_blank">
+                                            <i class="fas fa-video me-2"></i> Video
+                                        </a></li>
+                                        {% endif %}
+                                        
+                                        {% if module.code_url %}
+                                        <li><a class="dropdown-item" href="{{ module.code_url }}" target="_blank">
+                                            <i class="fas fa-code me-2"></i> Code
+                                        </a></li>
+                                        {% endif %}
+                                        
+                                        {% for note in module.notes.all %}
+                                        <li><a class="dropdown-item" href="{% url 'note_detail' note.slug %}">
+                                            <i class="fas fa-sticky-note me-2"></i> Notes
+                                        </a></li>
+                                        {% endfor %}
+                                    </ul>
+                                </div>
+                            </div>
+                            
+                            {% if module.description %}
+                            <p class="text-muted mt-2 mb-0">{{ module.description|truncatewords:30 }}</p>
+                            {% endif %}
+                        </div>
+                        {% endwith %}
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Module completion checkboxes
+    document.querySelectorAll('.module-complete-checkbox').forEach(checkbox => {
+        checkbox.addEventListener('change', function() {
+            const moduleId = this.dataset.moduleId;
+            const courseSlug = this.dataset.courseSlug;
+            
+            fetch(`/courses/${courseSlug}/complete/${moduleId}/`, {
+                method: 'POST',
+                headers: {
+                    'X-CSRFToken': '{{ csrf_token }}',
+                    'X-Requested-With': 'XMLHttpRequest'
+                }
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    // Update progress circle
+                    const progressCircle = document.querySelector('.progress-circle-fill');
+                    const progressText = document.querySelector('.progress-circle-text');
+                    
+                    if (progressCircle && progressText) {
+                        const newPercentage = data.progress_percentage;
+                        progressCircle.style.strokeDashoffset = `calc(314 - (314 * ${newPercentage}) / 100)`;
+                        progressText.textContent = `${Math.round(newPercentage)}%`;
+                    }
+                    
+                    // Show success message
+                    alert('Module marked as completed!');
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

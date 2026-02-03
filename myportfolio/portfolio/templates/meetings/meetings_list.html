@@ -1,0 +1,134 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Meetings & Events - Robert Sichomba{% endblock title %}
+
+{% block meta_description %}Discover Robert Sichomba's upcoming and past meetings, webinars, workshops, and speaking engagements on data science, machine learning, and web development.{% endblock meta_description %}
+
+{% block content %}
+    {# Hero Section for Meetings #}
+    <section class="hero d-flex align-items-center justify-content-center text-center" style="padding-top: 8rem; padding-bottom: 5rem;">
+        <div class="container" data-animate>
+            <h1 class="display-3 fw-bold mb-3">Meetings & Events</h1>
+            <p class="lead mb-4 col-lg-8 mx-auto">
+                Join me for upcoming webinars, workshops, and speaking engagements where I share insights on data, technology, and career growth.
+            </p>
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-lg px-4 me-sm-3">Request a Meeting <i class="fas fa-handshake ms-2"></i></a>
+                <a href="#past-meetings" class="btn btn-outline-primary btn-lg px-4">View Past Events <i class="fas fa-history ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+
+    {# Upcoming Meetings Section #}
+    <section class="py-5" data-animate>
+        <div class="container my-5">
+            <h2 class="text-center fw-bold mb-5">Upcoming Meetings & Workshops</h2>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for meeting in upcoming_meetings %} {# Assuming 'upcoming_meetings' is passed from your view #}
+                <div class="col">
+                    <div class="meeting-card h-100 d-flex flex-column">
+                        {% if meeting.image %}
+                            <img src="{{ meeting.image.url }}" class="card-img-top mb-3 rounded" alt="{{ meeting.title }} event banner">
+                        {% else %}
+                            <img src="{% static 'images/default_meeting_banner.jpg' %}" class="card-img-top mb-3 rounded" alt="Default meeting banner">
+                        {% endif %}
+                        <div class="card-body p-0 d-flex flex-column">
+                            <h5 class="card-title fw-bold">{{ meeting.title }}</h5>
+                            <p class="card-text text-muted mb-2">
+                                <i class="far fa-calendar-alt me-1"></i> {{ meeting.date_time|date:"F d, Y, P" }}
+                                {% if meeting.location %}<span class="ms-2"><i class="fas fa-map-marker-alt me-1"></i> {{ meeting.location }}</span>{% endif %}
+                            </p>
+                            <p class="card-text">{{ meeting.description|truncatechars:120 }}</p>
+
+                            <div class="mt-auto pt-3"> {# Push buttons to the bottom #}
+                                {% if meeting.external_link %}
+                                    <a href="{{ meeting.external_link }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-primary me-2">
+                                        Join/Register <i class="fas fa-external-link-alt ms-1"></i>
+                                    </a>
+                                {% endif %}
+                                <a href="{% url 'meeting_detail' meeting.pk %}" class="btn btn-sm btn-outline-info">
+                                    View Details <i class="fas fa-info-circle ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="lead">No upcoming meetings or events scheduled yet. Please check back soon!</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            {# Optional: Pagination for upcoming meetings if you have many #}
+
+        </div>
+    </section>
+
+    <hr class="my-5">
+
+    {# Past Meetings Section #}
+    <section id="past-meetings" class="py-5 bg-light" data-animate>
+        <div class="container my-5">
+            <h2 class="text-center fw-bold mb-5">Past Meetings & Events</h2>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {% for meeting in past_meetings %} {# Assuming 'past_meetings' is passed from your view #}
+                <div class="col">
+                    <div class="meeting-card h-100 d-flex flex-column border-secondary">
+                        {% if meeting.image %}
+                            <img src="{{ meeting.image.url }}" class="card-img-top mb-3 rounded" alt="{{ meeting.title }} event banner">
+                        {% else %}
+                            <img src="{% static 'images/default_meeting_banner.jpg' %}" class="card-img-top mb-3 rounded" alt="Default meeting banner">
+                        {% endif %}
+                        <div class="card-body p-0 d-flex flex-column">
+                            <h5 class="card-title fw-bold text-muted">{{ meeting.title }}</h5>
+                            <p class="card-text text-muted mb-2">
+                                <i class="far fa-calendar-alt me-1"></i> {{ meeting.date_time|date:"F d, Y" }}
+                                {% if meeting.location %}<span class="ms-2"><i class="fas fa-map-marker-alt me-1"></i> {{ meeting.location }}</span>{% endif %}
+                            </p>
+                            <p class="card-text text-muted">{{ meeting.description|truncatechars:120 }}</p>
+
+                            <div class="mt-auto pt-3">
+                                {% if meeting.recording_link %} {# Assuming a field for recording link #}
+                                    <a href="{{ meeting.recording_link }}" target="_blank" rel="noopener noreferrer" class="btn btn-sm btn-outline-dark me-2">
+                                        Watch Recording <i class="fas fa-video ms-1"></i>
+                                    </a>
+                                {% elif meeting.external_link %}
+                                    <span class="btn btn-sm btn-outline-dark me-2 disabled">Event Concluded</span>
+                                {% endif %}
+                                <a href="{% url 'meeting_detail' meeting.pk %}" class="btn btn-sm btn-outline-secondary">
+                                    View Details <i class="fas fa-info-circle ms-1"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="lead text-muted">No past meetings or events recorded yet.</p>
+                </div>
+                {% endfor %}
+            </div>
+
+            {# Optional: Pagination for past meetings #}
+
+        </div>
+    </section>
+
+    {# Call to Action / Scheduling #}
+    <section class="py-5 bg-dark text-white text-center" data-animate>
+        <div class="container my-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold mb-4">Want to Collaborate or Schedule a Session?</h2>
+                <p class="lead mb-4">
+                    Whether it's a technical deep-dive, a casual chat, or a formal consultation, I'm open to new connections.
+                </p>
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-lg me-3">Contact Me to Schedule <i class="fas fa-calendar-check ms-2"></i></a>
+                <a href="{% url 'about' %}" class="btn btn-outline-light btn-lg">Learn More About My Work <i class="fas fa-user ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

@@ -1,0 +1,493 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} - Instructors & Team{% endblock %}
+
+{% block extra_css %}
+<style>
+    .team-hero {
+        background: linear-gradient(135deg, var(--dark-grey) 0%, #1a1a2e 100%);
+        color: white;
+        padding: 100px 0 60px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .team-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 40%;
+        height: 100%;
+        background: url('{% static "images/team-pattern.svg" %}') repeat;
+        opacity: 0.1;
+    }
+    
+    .instructor-card {
+        background: white;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+        transition: all 0.3s ease;
+        border: 1px solid #e0e0e0;
+        height: 100%;
+    }
+    
+    .instructor-card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 40px rgba(0,0,0,0.15);
+        border-color: var(--accent-blue);
+    }
+    
+    .instructor-header {
+        position: relative;
+        height: 200px;
+        overflow: hidden;
+    }
+    
+    .instructor-bg {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, var(--accent-blue), #6f42c1);
+        opacity: 0.9;
+    }
+    
+    .instructor-avatar {
+        position: absolute;
+        bottom: -50px;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        border: 5px solid white;
+        background: white;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    }
+    
+    .instructor-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+    
+    .instructor-body {
+        padding: 70px 30px 30px;
+        text-align: center;
+    }
+    
+    .instructor-name {
+        font-size: 1.5rem;
+        font-weight: 700;
+        margin-bottom: 5px;
+        color: var(--dark-grey);
+    }
+    
+    .instructor-role {
+        color: var(--accent-blue);
+        font-weight: 600;
+        margin-bottom: 15px;
+        font-size: 1rem;
+    }
+    
+    .instructor-bio {
+        color: #666;
+        line-height: 1.6;
+        margin-bottom: 20px;
+        font-size: 0.95rem;
+    }
+    
+    .instructor-social {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 20px;
+    }
+    
+    .instructor-social a {
+        width: 40px;
+        height: 40px;
+        border-radius: 50%;
+        background: #f8f9fa;
+        color: var(--dark-grey);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        text-decoration: none;
+        transition: all 0.3s ease;
+    }
+    
+    .instructor-social a:hover {
+        background: var(--accent-blue);
+        color: white;
+        transform: translateY(-3px);
+    }
+    
+    .lead-instructor-badge {
+        position: absolute;
+        top: 20px;
+        right: 20px;
+        background: #ffc107;
+        color: #000;
+        padding: 5px 15px;
+        border-radius: 20px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        z-index: 2;
+    }
+    
+    .team-stats {
+        background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+        border-radius: 15px;
+        padding: 3rem;
+        margin: 4rem 0;
+    }
+    
+    .stat-item {
+        text-align: center;
+        padding: 1.5rem;
+    }
+    
+    .stat-number {
+        font-size: 2.5rem;
+        font-weight: 700;
+        color: var(--accent-blue);
+        display: block;
+    }
+    
+    .stat-label {
+        font-size: 0.9rem;
+        color: #666;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    .team-description {
+        max-width: 800px;
+        margin: 0 auto 3rem;
+        text-align: center;
+        font-size: 1.1rem;
+        line-height: 1.8;
+        color: #555;
+    }
+    
+    .join-team-cta {
+        background: linear-gradient(135deg, var(--dark-grey) 0%, #1a1a2e 100%);
+        color: white;
+        border-radius: 15px;
+        padding: 4rem;
+        text-align: center;
+        margin-top: 4rem;
+    }
+    
+    @media (max-width: 768px) {
+        .team-stats {
+            padding: 2rem;
+        }
+        
+        .join-team-cta {
+            padding: 2rem;
+        }
+        
+        .instructor-body {
+            padding: 70px 20px 20px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="team-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1>{{ course.title }}</h1>
+                <h3 class="mb-4" style="color: rgba(255,255,255,0.9);">Meet the Team</h3>
+                <p class="lead mb-0" style="color: rgba(255,255,255,0.8);">
+                    Learn from industry experts and experienced educators
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Team Description -->
+<div class="container mt-5">
+    <div class="team-description">
+        <p>Our team of dedicated instructors brings together years of industry experience and teaching expertise. 
+        We're passionate about helping you succeed and are committed to providing the highest quality learning experience.</p>
+    </div>
+</div>
+
+<!-- Lead Instructors -->
+{% if lead_instructors %}
+<section class="py-5">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title">Lead Instructors</h2>
+                <p class="text-muted">Your primary guides through this learning journey</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for instructor in lead_instructors %}
+            <div class="col-lg-6 mb-4">
+                <div class="instructor-card">
+                    {% if instructor.is_lead_instructor %}
+                    <div class="lead-instructor-badge">
+                        <i class="fas fa-star me-1"></i> Lead Instructor
+                    </div>
+                    {% endif %}
+                    
+                    <div class="instructor-header">
+                        <div class="instructor-bg"></div>
+                        <div class="instructor-avatar">
+                            {% if instructor.user.profile_image %}
+                            <img src="{{ instructor.user.profile_image.url }}" alt="{{ instructor.user.get_full_name }}">
+                            {% else %}
+                            <div class="bg-primary d-flex align-items-center justify-content-center h-100">
+                                <span class="text-white display-4">{{ instructor.user.first_name|first }}{{ instructor.user.last_name|first }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="instructor-body">
+                        <h3 class="instructor-name">{{ instructor.user.get_full_name }}</h3>
+                        <div class="instructor-role">{{ instructor.role|default:"Course Instructor" }}</div>
+                        <p class="instructor-bio">{{ instructor.bio|truncatewords:50 }}</p>
+                        
+                        <div class="instructor-social">
+                            {% if instructor.linkedin_url %}
+                            <a href="{{ instructor.linkedin_url }}" target="_blank" title="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            {% endif %}
+                            
+                            {% if instructor.github_url %}
+                            <a href="{{ instructor.github_url }}" target="_blank" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            {% endif %}
+                            
+                            {% if instructor.twitter_url %}
+                            <a href="{{ instructor.twitter_url }}" target="_blank" title="Twitter">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            {% endif %}
+                            
+                            {% if instructor.website_url %}
+                            <a href="{{ instructor.website_url }}" target="_blank" title="Website">
+                                <i class="fas fa-globe"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Teaching Assistants -->
+{% if teaching_assistants %}
+<section class="py-5 bg-light">
+    <div class="container">
+        <div class="row mb-5">
+            <div class="col-12 text-center">
+                <h2 class="section-title">Teaching Assistants</h2>
+                <p class="text-muted">Dedicated to supporting your learning journey</p>
+            </div>
+        </div>
+        
+        <div class="row">
+            {% for instructor in teaching_assistants %}
+            <div class="col-lg-4 col-md-6 mb-4">
+                <div class="instructor-card">
+                    <div class="instructor-header">
+                        <div class="instructor-bg"></div>
+                        <div class="instructor-avatar">
+                            {% if instructor.user.profile_image %}
+                            <img src="{{ instructor.user.profile_image.url }}" alt="{{ instructor.user.get_full_name }}">
+                            {% else %}
+                            <div class="bg-primary d-flex align-items-center justify-content-center h-100">
+                                <span class="text-white display-4">{{ instructor.user.first_name|first }}{{ instructor.user.last_name|first }}</span>
+                            </div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div class="instructor-body">
+                        <h3 class="instructor-name">{{ instructor.user.get_full_name }}</h3>
+                        <div class="instructor-role">{{ instructor.role|default:"Teaching Assistant" }}</div>
+                        <p class="instructor-bio">{{ instructor.bio|truncatewords:30 }}</p>
+                        
+                        <div class="instructor-social">
+                            {% if instructor.linkedin_url %}
+                            <a href="{{ instructor.linkedin_url }}" target="_blank" title="LinkedIn">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            {% endif %}
+                            
+                            {% if instructor.github_url %}
+                            <a href="{{ instructor.github_url }}" target="_blank" title="GitHub">
+                                <i class="fab fa-github"></i>
+                            </a>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endif %}
+
+<!-- Team Stats -->
+<div class="container">
+    <div class="team-stats">
+        <div class="row text-center">
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <span class="stat-number">{{ instructors.count }}</span>
+                    <span class="stat-label">Team Members</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <span class="stat-number">{% if instructors.count > 5 %}10+{% else %}5+{% endif %}</span>
+                    <span class="stat-label">Years Experience</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <span class="stat-number">24/7</span>
+                    <span class="stat-label">Support Available</span>
+                </div>
+            </div>
+            <div class="col-md-3 col-6">
+                <div class="stat-item">
+                    <span class="stat-number">100%</span>
+                    <span class="stat-label">Dedication</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Join Team CTA -->
+<div class="container">
+    <div class="join-team-cta">
+        <h3 class="mb-3">Interested in joining our team?</h3>
+        <p class="mb-4" style="color: rgba(255,255,255,0.9);">
+            We're always looking for passionate educators and industry experts to join our team.
+        </p>
+        <a href="{% url 'contact' %}" class="btn btn-light btn-lg">
+            <i class="fas fa-envelope me-2"></i> Contact Us
+        </a>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Course
+                </a>
+                
+                <div class="btn-group">
+                    <a href="{% url 'course_schedule' course.slug %}" class="btn btn-outline-primary">
+                        <i class="fas fa-calendar-alt me-2"></i> Schedule
+                    </a>
+                    <a href="{% url 'course_faq' course.slug %}" class="btn btn-outline-primary">
+                        <i class="fas fa-question-circle me-2"></i> FAQ
+                    </a>
+                    {% if is_enrolled %}
+                    <a href="{% url 'course_dashboard' course.slug %}" class="btn btn-primary">
+                        <i class="fas fa-tachometer-alt me-2"></i> Dashboard
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Instructor card animations
+    const instructorCards = document.querySelectorAll('.instructor-card');
+    
+    const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry, index) => {
+            if (entry.isIntersecting) {
+                setTimeout(() => {
+                    entry.target.style.opacity = '1';
+                    entry.target.style.transform = 'translateY(0)';
+                }, index * 100);
+            }
+        });
+    }, {
+        threshold: 0.1
+    });
+    
+    instructorCards.forEach((card, index) => {
+        card.style.opacity = '0';
+        card.style.transform = 'translateY(20px)';
+        card.style.transition = 'opacity 0.5s ease, transform 0.5s ease';
+        observer.observe(card);
+    });
+    
+    // Team member filter
+    const filterButtons = document.createElement('div');
+    filterButtons.className = 'd-flex flex-wrap gap-2 justify-content-center mb-4';
+    filterButtons.innerHTML = `
+        <button class="btn btn-sm btn-outline-primary active" data-filter="all">All</button>
+        <button class="btn btn-sm btn-outline-primary" data-filter="lead">Lead Instructors</button>
+        <button class="btn btn-sm btn-outline-primary" data-filter="ta">Teaching Assistants</button>
+    `;
+    
+    document.querySelector('.team-description').after(filterButtons);
+    
+    // Filter functionality
+    document.querySelectorAll('[data-filter]').forEach(button => {
+        button.addEventListener('click', function() {
+            // Update active button
+            document.querySelectorAll('[data-filter]').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            this.classList.add('active');
+            
+            const filter = this.dataset.filter;
+            const cards = document.querySelectorAll('.instructor-card');
+            
+            cards.forEach(card => {
+                if (filter === 'all') {
+                    card.parentElement.style.display = 'block';
+                } else if (filter === 'lead') {
+                    const isLead = card.querySelector('.lead-instructor-badge');
+                    card.parentElement.style.display = isLead ? 'block' : 'none';
+                } else if (filter === 'ta') {
+                    const isLead = card.querySelector('.lead-instructor-badge');
+                    card.parentElement.style.display = isLead ? 'none' : 'block';
+                }
+            });
+        });
+    });
+});
+</script>
+{% endblock %}

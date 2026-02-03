@@ -1,0 +1,119 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}My Courses{% endblock %}
+
+{% block content %}
+<div class="container py-5">
+    <div class="row mb-5">
+        <div class="col-12">
+            <h1 class="display-4 mb-3">My Courses</h1>
+            <p class="lead text-muted">Track your progress and continue learning</p>
+        </div>
+    </div>
+    
+    {% if enrollments %}
+    <div class="row">
+        {% for enrollment in enrollments %}
+        <div class="col-lg-4 col-md-6 mb-4">
+            <div class="card h-100 shadow-sm">
+                {% if enrollment.course.thumbnail %}
+                <img src="{{ enrollment.course.thumbnail.url }}" class="card-img-top" 
+                     alt="{{ enrollment.course.title }}" style="height: 200px; object-fit: cover;">
+                {% else %}
+                <div class="card-img-top bg-dark d-flex align-items-center justify-content-center" 
+                     style="height: 200px;">
+                    <i class="fas fa-graduation-cap fa-3x text-white"></i>
+                </div>
+                {% endif %}
+                
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-{{ enrollment.course.level }}">
+                            {{ enrollment.course.get_level_display }}
+                        </span>
+                        {% if enrollment.completed_at %}
+                        <span class="badge bg-success">Completed</span>
+                        {% endif %}
+                    </div>
+                    
+                    <h5 class="card-title">{{ enrollment.course.title }}</h5>
+                    <p class="card-text text-muted">{{ enrollment.course.short_description|truncatewords:15 }}</p>
+                    
+                    <!-- Progress -->
+                    <div class="mb-3">
+                        <div class="d-flex justify-content-between mb-1">
+                            <small>Progress</small>
+                            <small>{{ enrollment.progress_percentage|floatformat:0 }}%</small>
+                        </div>
+                        <div class="progress" style="height: 6px;">
+                            <div class="progress-bar" role="progressbar" 
+                                 style="width: {{ enrollment.progress_percentage }}%;">
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="d-flex justify-content-between align-items-center">
+                        <small class="text-muted">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ enrollment.enrollment_date|date:"M d, Y" }}
+                        </small>
+                        
+                        <a href="{% url 'course_dashboard' enrollment.course.slug %}" 
+                           class="btn btn-sm btn-primary">
+                            {% if enrollment.completed_at %}
+                            Review
+                            {% else %}
+                            Continue
+                            {% endif %}
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+    
+    <!-- Progress Summary -->
+    <div class="row mt-5">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="mb-0">Learning Statistics</h5>
+                </div>
+                <div class="card-body">
+                    <div class="row text-center">
+                        <div class="col-md-3">
+                            <h2 class="text-primary">{{ enrollments|length }}</h2>
+                            <p class="text-muted">Total Courses</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h2 class="text-success">{{ completed_courses }}</h2>
+                            <p class="text-muted">Completed</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h2 class="text-warning">{{ in_progress_courses }}</h2>
+                            <p class="text-muted">In Progress</p>
+                        </div>
+                        <div class="col-md-3">
+                            <h2 class="text-info">{{ average_progress|floatformat:0 }}%</h2>
+                            <p class="text-muted">Average Progress</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    {% else %}
+    <div class="text-center py-5">
+        <i class="fas fa-graduation-cap fa-5x text-muted mb-4"></i>
+        <h3>No courses enrolled yet</h3>
+        <p class="lead text-muted mb-4">Start your learning journey by enrolling in a course</p>
+        <a href="{% url 'courses_list' %}" class="btn btn-primary btn-lg">
+            <i class="fas fa-search me-2"></i> Browse Courses
+        </a>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

@@ -1,0 +1,469 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ course.title }} - Schedule{% endblock %}
+
+{% block extra_css %}
+<style>
+    .schedule-hero {
+        background: linear-gradient(135deg, var(--dark-grey) 0%, #1a1a2e 100%);
+        color: white;
+        padding: 100px 0 60px;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .schedule-hero::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 40%;
+        height: 100%;
+        background: url('{% static "images/schedule-pattern.svg" %}') repeat;
+        opacity: 0.1;
+    }
+    
+    .timeline-container {
+        position: relative;
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 40px 0;
+    }
+    
+    .timeline-line {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 4px;
+        height: 100%;
+        background: linear-gradient(to bottom, var(--accent-blue), #6f42c1);
+        border-radius: 2px;
+    }
+    
+    .timeline-item {
+        position: relative;
+        margin-bottom: 60px;
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+    
+    .timeline-content {
+        width: 45%;
+        padding: 25px;
+        background: white;
+        border-radius: 12px;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        border: 1px solid #e0e0e0;
+        position: relative;
+        transition: all 0.3s ease;
+    }
+    
+    .timeline-item:nth-child(odd) .timeline-content {
+        margin-right: auto;
+        margin-left: 0;
+    }
+    
+    .timeline-item:nth-child(even) .timeline-content {
+        margin-left: auto;
+        margin-right: 0;
+    }
+    
+    .timeline-dot {
+        position: absolute;
+        left: 50%;
+        transform: translateX(-50%);
+        width: 24px;
+        height: 24px;
+        background: var(--accent-blue);
+        border-radius: 50%;
+        border: 4px solid white;
+        box-shadow: 0 0 0 4px rgba(52, 152, 219, 0.2);
+        z-index: 2;
+    }
+    
+    .timeline-date {
+        display: inline-block;
+        padding: 6px 15px;
+        background: var(--accent-blue);
+        color: white;
+        border-radius: 20px;
+        font-weight: 600;
+        font-size: 0.9rem;
+        margin-bottom: 15px;
+    }
+    
+    .module-type {
+        display: inline-block;
+        padding: 4px 12px;
+        border-radius: 15px;
+        font-size: 0.8rem;
+        font-weight: 600;
+        margin-bottom: 10px;
+    }
+    
+    .type-lecture { background: #d1ecf1; color: #0c5460; }
+    .type-lab { background: #d4edda; color: #155724; }
+    .type-workshop { background: #fff3cd; color: #856404; }
+    .type-assignment { background: #f8d7da; color: #721c24; }
+    .type-exam { background: #e2e3e5; color: #383d41; }
+    
+    .resource-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+        gap: 10px;
+        margin-top: 15px;
+    }
+    
+    .resource-card {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        padding: 12px;
+        text-align: center;
+        transition: all 0.3s ease;
+        text-decoration: none;
+        color: inherit;
+    }
+    
+    .resource-card:hover {
+        background: var(--accent-blue);
+        color: white;
+        transform: translateY(-3px);
+        text-decoration: none;
+    }
+    
+    .resource-icon {
+        font-size: 1.5rem;
+        margin-bottom: 8px;
+    }
+    
+    .resource-label {
+        font-size: 0.8rem;
+        font-weight: 600;
+    }
+    
+    .current-day {
+        border: 3px solid var(--accent-blue);
+        box-shadow: 0 0 20px rgba(52, 152, 219, 0.3);
+    }
+    
+    .day-completed {
+        opacity: 0.7;
+        border-color: #28a745;
+    }
+    
+    .day-completed .timeline-date {
+        background: #28a745;
+    }
+    
+    .calendar-view {
+        display: none;
+    }
+    
+    .view-toggle {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+        margin: 2rem 0;
+    }
+    
+    @media (max-width: 768px) {
+        .timeline-line {
+            left: 30px;
+        }
+        
+        .timeline-content {
+            width: calc(100% - 80px);
+            margin-left: 80px !important;
+            margin-right: 0 !important;
+        }
+        
+        .timeline-dot {
+            left: 30px;
+        }
+        
+        .timeline-item:nth-child(odd) .timeline-content,
+        .timeline-item:nth-child(even) .timeline-content {
+            margin-left: 80px;
+        }
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<!-- Hero Section -->
+<section class="schedule-hero">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 mx-auto text-center">
+                <h1>{{ course.title }}</h1>
+                <h3 class="mb-4" style="color: rgba(255,255,255,0.9);">Course Schedule</h3>
+                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                    <span class="badge bg-light text-dark">
+                        <i class="fas fa-calendar-alt me-2"></i> {{ course.start_date|date:"F j, Y" }} - {{ course.end_date|date:"F j, Y" }}
+                    </span>
+                    <span class="badge bg-light text-dark">
+                        <i class="fas fa-clock me-2"></i> {{ course.schedule_note }}
+                    </span>
+                    {% if is_enrolled %}
+                    <a href="{% url 'course_dashboard' course.slug %}" class="badge bg-success">
+                        <i class="fas fa-user-check me-2"></i> Enrolled
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- View Toggle -->
+<div class="container mt-4">
+    <div class="view-toggle">
+        <button class="btn btn-outline-primary active" id="timeline-view">
+            <i class="fas fa-stream me-2"></i> Timeline View
+        </button>
+        <button class="btn btn-outline-primary" id="calendar-view">
+            <i class="fas fa-calendar-alt me-2"></i> Calendar View
+        </button>
+        {% if is_enrolled %}
+        <a href="{% url 'course_dashboard' course.slug %}" class="btn btn-primary">
+            <i class="fas fa-tachometer-alt me-2"></i> Go to Dashboard
+        </a>
+        {% endif %}
+    </div>
+</div>
+
+<!-- Timeline View -->
+<div class="container timeline-view">
+    <div class="timeline-container">
+        <div class="timeline-line"></div>
+        
+        {% for module in modules %}
+        <div class="timeline-item {% if module.is_current %}current-day{% endif %} {% if module.is_completed %}day-completed{% endif %}">
+            <div class="timeline-dot"></div>
+            
+            <div class="timeline-content" data-animate>
+                <span class="timeline-date">
+                    {% if module.date %}
+                    {{ module.date|date:"M j, Y" }}
+                    {% else %}
+                    Day {{ forloop.counter }}
+                    {% endif %}
+                </span>
+                
+                <span class="module-type type-{{ module.module_type|default:'lecture' }}">
+                    {% if module.is_live_session %}
+                    <i class="fas fa-video me-1"></i> Live Session
+                    {% else %}
+                    <i class="fas fa-book me-1"></i> {{ module.get_module_type_display|default:"Lecture" }}
+                    {% endif %}
+                </span>
+                
+                <h4 class="mb-3">{{ module.title }}</h4>
+                
+                <p class="text-muted mb-3">{{ module.description|linebreaksbr }}</p>
+                
+                {% if module.slides_url or module.video_url or module.code_url or module.lecture_meeting or module.notes.all or module.documents.all %}
+                <h6 class="mb-2">Resources:</h6>
+                <div class="resource-grid">
+                    {% if module.slides_url %}
+                    <a href="{{ module.slides_url }}" class="resource-card" target="_blank">
+                        <div class="resource-icon">
+                            <i class="fas fa-file-powerpoint"></i>
+                        </div>
+                        <div class="resource-label">Slides</div>
+                    </a>
+                    {% endif %}
+                    
+                    {% if module.video_url %}
+                    <a href="{{ module.video_url }}" class="resource-card" target="_blank">
+                        <div class="resource-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="resource-label">Video</div>
+                    </a>
+                    {% endif %}
+                    
+                    {% if module.code_url %}
+                    <a href="{{ module.code_url }}" class="resource-card" target="_blank">
+                        <div class="resource-icon">
+                            <i class="fas fa-code"></i>
+                        </div>
+                        <div class="resource-label">Code</div>
+                    </a>
+                    {% endif %}
+                    
+                    {% if module.lecture_meeting %}
+                    <a href="{{ module.lecture_meeting.meeting_link }}" class="resource-card" target="_blank">
+                        <div class="resource-icon">
+                            <i class="fas fa-video"></i>
+                        </div>
+                        <div class="resource-label">Live</div>
+                    </a>
+                    {% endif %}
+                    
+                    {% for note in module.notes.all %}
+                    <a href="{% url 'note_detail' note.slug %}" class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-sticky-note"></i>
+                        </div>
+                        <div class="resource-label">Notes</div>
+                    </a>
+                    {% endfor %}
+                    
+                    {% for document in module.documents.all %}
+                    <a href="{% url 'document_detail' document.slug %}" class="resource-card">
+                        <div class="resource-icon">
+                            <i class="fas fa-file-pdf"></i>
+                        </div>
+                        <div class="resource-label">PDF</div>
+                    </a>
+                    {% endfor %}
+                </div>
+                {% endif %}
+                
+                {% if is_enrolled %}
+                <div class="form-check mt-3">
+                    <input class="form-check-input" type="checkbox" 
+                           {% if module.is_completed %}checked{% endif %}
+                           onchange="toggleModuleCompletion({{ module.id }})">
+                    <label class="form-check-label">
+                        Mark as completed
+                    </label>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+<!-- Calendar View -->
+<div class="container calendar-view" style="display: none;">
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div id="course-calendar"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Navigation -->
+<div class="container py-4">
+    <div class="row">
+        <div class="col-12">
+            <div class="d-flex justify-content-between">
+                <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i> Back to Course
+                </a>
+                
+                <div class="btn-group">
+                    <a href="{% url 'course_faq' course.slug %}" class="btn btn-outline-primary">
+                        <i class="fas fa-question-circle me-2"></i> FAQ
+                    </a>
+                    <a href="{% url 'course_team' course.slug %}" class="btn btn-outline-primary">
+                        <i class="fas fa-users me-2"></i> Instructors
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script src="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.js"></script>
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/fullcalendar@5.11.3/main.min.css">
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // View toggle
+    const timelineViewBtn = document.getElementById('timeline-view');
+    const calendarViewBtn = document.getElementById('calendar-view');
+    const timelineContainer = document.querySelector('.timeline-view');
+    const calendarContainer = document.querySelector('.calendar-view');
+    
+    timelineViewBtn.addEventListener('click', function() {
+        this.classList.add('active');
+        calendarViewBtn.classList.remove('active');
+        timelineContainer.style.display = 'block';
+        calendarContainer.style.display = 'none';
+    });
+    
+    calendarViewBtn.addEventListener('click', function() {
+        this.classList.add('active');
+        timelineViewBtn.classList.remove('active');
+        timelineContainer.style.display = 'none';
+        calendarContainer.style.display = 'block';
+        initializeCalendar();
+    });
+    
+    // Initialize FullCalendar
+    function initializeCalendar() {
+        const calendarEl = document.getElementById('course-calendar');
+        const calendar = new FullCalendar.Calendar(calendarEl, {
+            initialView: 'dayGridMonth',
+            headerToolbar: {
+                left: 'prev,next today',
+                center: 'title',
+                right: 'dayGridMonth,timeGridWeek,listWeek'
+            },
+            events: [
+                {% for module in modules %}
+                {
+                    title: '{{ module.title }}',
+                    start: '{% if module.date %}{{ module.date|date:"Y-m-d" }}{% else %}{{ course.start_date|date:"Y-m-d" }}{% endif %}',
+                    url: '#module-{{ module.id }}',
+                    color: '{% if module.is_live_session %}#dc3545{% else %}#3498db{% endif %}',
+                    description: '{{ module.description|escapejs|truncatewords:20 }}'
+                },
+                {% endfor %}
+            ],
+            eventClick: function(info) {
+                info.jsEvent.preventDefault();
+                const moduleId = info.event.url.split('-').pop();
+                const moduleElement = document.querySelector(`[data-module-id="${moduleId}"]`);
+                if (moduleElement) {
+                    timelineContainer.style.display = 'block';
+                    calendarContainer.style.display = 'none';
+                    timelineViewBtn.classList.add('active');
+                    calendarViewBtn.classList.remove('active');
+                    moduleElement.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        });
+        calendar.render();
+    }
+    
+    // Module completion toggle
+    window.toggleModuleCompletion = function(moduleId) {
+        fetch(`/courses/{{ course.slug }}/complete/${moduleId}/`, {
+            method: 'POST',
+            headers: {
+                'X-CSRFToken': '{{ csrf_token }}',
+                'X-Requested-With': 'XMLHttpRequest'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                const moduleElement = document.querySelector(`[data-module-id="${moduleId}"]`);
+                if (moduleElement) {
+                    moduleElement.classList.toggle('day-completed');
+                }
+            }
+        });
+    };
+    
+    // Add data-module-id to timeline items
+    document.querySelectorAll('.timeline-item').forEach((item, index) => {
+        item.setAttribute('data-module-id', {{ modules.0.id }} + index);
+    });
+});
+</script>
+{% endblock %}
