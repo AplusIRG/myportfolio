@@ -1,0 +1,89 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Recommended Books - Robert Sichomba{% endblock title %}
+
+{% block meta_description %}Explore Robert Sichomba's curated list of recommended books on data science, programming, personal development, and more.{% endblock meta_description %}
+
+{% block content %}
+    {# Hero Section for Books #}
+    <section class="hero d-flex align-items-center justify-content-center text-center" style="padding-top: 8rem; padding-bottom: 5rem;">
+        <div class="container" data-animate>
+            <h1 class="display-3 fw-bold mb-3">My Recommended Books</h1>
+            <p class="lead mb-4 col-lg-8 mx-auto">
+                A curated collection of books that have significantly shaped my understanding of data, technology, and life. Discover resources that inspire and educate.
+            </p>
+        </div>
+    </section>
+
+    {# Books List Section #}
+    <section class="py-5" data-animate>
+        <div class="container my-5">
+            <h2 class="text-center fw-bold mb-5">Current Recommendations</h2>
+
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {# Loop through books here #}
+                {% for book in books %} {# Assuming 'books' is passed from your Django view #}
+                <div class="col">
+                    <div class="book-card h-100 d-flex flex-column">
+                        {% if book.cover_image %}
+                            <img src="{{ book.cover_image.url }}" class="card-img-top mb-3 rounded shadow-sm" alt="Cover of {{ book.title }}">
+                        {% else %}
+                            <img src="{% static 'images/default_book_cover.jpg' %}" class="card-img-top mb-3 rounded shadow-sm" alt="Default book cover">
+                        {% endif %}
+                        <div class="card-body p-0 d-flex flex-column">
+                            <h5 class="card-title fw-bold">{{ book.title }}</h5>
+                            <p class="card-text text-muted mb-2">
+                                <i class="fas fa-user-edit me-1"></i> {{ book.author }}
+                                {% if book.publication_year %}<span class="ms-2">({{ book.publication_year }})</span>{% endif %}
+                            </p>
+                            <p class="card-text">{{ book.summary|truncatechars:150 }}</p>
+                            <div class="mt-auto pt-3"> {# Push "View Details" to the bottom #}
+                                <a href="{% url 'book_detail' book.pk %}" class="btn btn-sm btn-outline-primary">View Details <i class="fas fa-book-reader ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="lead">No recommended books found yet. Check back soon for new additions!</p>
+                    <a href="{% url 'contact' %}" class="btn btn-primary mt-3">Suggest a Book <i class="fas fa-lightbulb ms-2"></i></a>
+                </div>
+                {% endfor %}
+            </div>
+
+            {# Optional: Add Pagination here if you plan to have many books #}
+            
+            <nav aria-label="Book page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item {% if not books.has_previous %}disabled{% endif %}">
+                        <a class="page-link" href="{% if books.has_previous %}?page={{ books.previous_page_number }}{% else %}#{% endif %}">Previous</a>
+                    </li>
+                    {% for i in books.paginator.page_range %}
+                    <li class="page-item {% if books.number == i %}active{% endif %}">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endfor %}
+                    <li class="page-item {% if not books.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="{% if books.has_next %}?page={{ books.next_page_number }}{% else %}#{% endif %}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+            
+        </div>
+    </section>
+
+    {# Call to Action for Other Resources #}
+    <section class="py-5 bg-dark text-white text-center" data-animate>
+        <div class="container my-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold mb-4">Looking for More Resources?</h2>
+                <p class="lead mb-4">
+                    Beyond books, I share my insights through blog posts, notes, and documents. Explore more of my knowledge base.
+                </p>
+                <a href="{% url 'blog_list' %}" class="btn btn-primary btn-lg me-3">Visit My Blog <i class="fas fa-newspaper ms-2"></i></a>
+                <a href="{% url 'documents_list' %}" class="btn btn-outline-light btn-lg">Browse Documents <i class="fas fa-file-alt ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

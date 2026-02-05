@@ -1,0 +1,263 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Robert Sichomba | Data Analyst, ML Engineer, Web Developer{% endblock title %}
+
+{% block meta_description %}Welcome to My Website.{% endblock meta_description %}
+
+{# No need for {% block extra_head %} or {% block extra_js %} unless there are very specific home-page only scripts/styles #}
+
+{% block content %}
+    {# Hero Section #}
+    <section class="hero text-white d-flex align-items-center justify-content-center">
+        <div class="container text-center" data-animate>
+            <h1 class="display-3 fw-bold mb-4">Hi, I'm Robert Sichomba</h1>
+            <p class="lead mb-5 col-lg-8 mx-auto">
+                Transforming data into insightful interpretation and building intelligent solutions that empower businesses and individuals.
+                Based in Zambia, passionate about Physics and it's applications, Exploration Geology, AI and Machine Learning Research, Building EdTech tools, and Automation Solutions.
+            </p> 
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a href="{% url 'projects_list' %}" class="btn btn-primary btn-lg px-4 me-sm-3">View My Work <i class="fas fa-arrow-right ms-2"></i></a>
+                <a href="{% url 'contact' %}" class="btn btn-outline-primary btn-lg px-4">Get in Touch <i class="fas fa-envelope ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <hr class="my-5">
+
+    {# Services Section #}
+    <section class="py-5" data-animate>
+        <div class="container my-5">
+            <h2 class="text-center fw-bold mb-5">Services</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                <div class="col">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-chart-line"></i></div>
+                        <h4 class="fw-bold">Data Analysis, Visualization & Reporting</h4>
+                        <p>We collect data, preprocess, extract meaningful insights from different types of datasets and presenting them through interactive, clear visualizations and report documentation.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-brain"></i></div>
+                        <h4 class="fw-bold">Research, Consultation & Collaboration</h4>
+                        <p>Developing intelligent models that facilitae and enhance research processes.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-code"></i></div>
+                        <h4 class="fw-bold">Web Application Development</h4>
+                        <p>Building robust, scalable, and user-friendly web applications using modern full-stack technologies. You want a website for your business, portfolio, EdTech, etc we have you covered.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-graduation-cap"></i></div>
+                        <h4 class="fw-bold">Educational Services</h4>
+                        <p>Designing and developing engaging digital learning tools to enhance educational experiences and outcomes. Offering Introductory and Intermediate hands on courses</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-database"></i></div>
+                        <h4 class="fw-bold">Database Management</h4>
+                        <p>Designing, implementing, and optimizing databases for efficient data storage and retrieval.</p>
+                    </div>
+                </div>
+                <div class="col">
+                    <div class="service-card">
+                        <div class="service-icon"><i class="fas fa-cloud"></i></div>
+                        <h4 class="fw-bold">Cloud Deployment</h4>
+                        <p>Deploying and managing applications on cloud platforms like AWS, Azure, Google Cloud, or Render for scalability and reliability.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <hr class="my-5">
+
+    {# Featured Projects Section #}
+    <section class="bg-light py-5" data-animate>
+        <div class="container my-5">
+            <h2 class="text-center fw-bold mb-5">Featured Projects</h2>
+            <div class="row row-cols-1 row-cols-md-2 g-4"> {# Display 2 columns on medium screens and up #}
+                {# Project 1 - Dynamic example #}
+                <div class="col">
+                    <div class="project-card position-relative">
+                        <span class="project-badge">Featured</span>
+                        <img src="{% static 'images/project_potability.jpg' %}" class="card-img-top mb-3" alt="Drinking Water Potability Project">
+                        <div class="card-body p-0"> {# Removed default card-body padding as project-card has padding #}
+                            <h5 class="card-title fw-bold">Drinking Water Potability Classification</h5>
+                            <p class="card-text text-muted mb-2">Machine Learning | Data Analysis</p>
+                            <p class="card-text">Developed an ML model to classify water potability based on various chemical properties. Essential for public health insights.</p>
+                            <div class="tech-tags">
+                                <span>Python</span>
+                                <span>Scikit-learn</span>
+                                <span>Pandas</span>
+                                <span>Streamlit</span>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{% url 'project_detail' 1 %}" class="btn btn-project">
+                                    <i class="fas fa-arrow-right"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                {# Project 2 - Dynamic example #}
+                <div class="col">
+                    <div class="project-card position-relative">
+                        <span class="project-badge">Latest</span>
+                        <img src="{% static 'images/project_quiz_app.jpg' %}" class="card-img-top mb-3" alt="Interactive Quiz App">
+                        <div class="card-body p-0">
+                            <h5 class="card-title fw-bold">Interactive Quiz & Exam Prep Platform</h5>
+                            <p class="card-text text-muted mb-2">Web Development | Educational Software</p>
+                            <p class="card-text">A dynamic web application designed to help students prepare for exams with customizable quizzes and performance tracking.</p>
+                            <div class="tech-tags">
+                                <span>Django</span>
+                                <span>Python</span>
+                                <span>JavaScript</span>
+                                <span>PostgreSQL</span>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{% url 'project_detail' 2 %}" class="btn btn-project">
+                                    <i class="fas fa-arrow-right"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {# Add more featured projects as needed, keeping to 2-4 for the home page #}
+            </div>
+            <div class="text-center mt-5">
+                <a href="{% url 'projects_list' %}" class="btn btn-primary btn-lg">Browse All Projects <i class="fas fa-long-arrow-alt-right ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+
+    ---
+
+    {# --- NEW SECTION: Explore My Resources --- #}
+    <section class="py-5" data-animate>
+        <div class="container my-5">
+            <h2 class="text-center fw-bold mb-5">Explore My Resources & Insights</h2>
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-4 g-4">
+                {# Card for Books #}
+                <div class="col">
+                    <div class="card text-center h-100 shadow-sm p-3">
+                        <div class="card-body">
+                            <i class="fas fa-book-open fa-3x text-primary mb-3"></i>
+                            <h5 class="card-title fw-bold">Recommended Books</h5>
+                            <p class="card-text mb-3">Dive into my curated collection of influential reads on tech and growth.</p>
+                            <a href="{% url 'books_list' %}" class="btn btn-sm btn-outline-primary mt-auto">View Books <i class="fas fa-arrow-right ms-2"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Card for Blog #}
+                <div class="col">
+                    <div class="card text-center h-100 shadow-sm p-3">
+                        <div class="card-body">
+                            <i class="fas fa-newspaper fa-3x text-success mb-3"></i>
+                            <h5 class="card-title fw-bold">Latest Blog Posts</h5>
+                            <p class="card-text mb-3">Read my articles, tutorials, and deep dives into data science and tech trends.</p>
+                            <a href="{% url 'blog_list' %}" class="btn btn-sm btn-outline-success mt-auto">Read Blog <i class="fas fa-arrow-right ms-2"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Card for Notes #}
+                <div class="col">
+                    <div class="card text-center h-100 shadow-sm p-3">
+                        <div class="card-body">
+                            <i class="fas fa-sticky-note fa-3x text-info mb-3"></i>
+                            <h5 class="card-title fw-bold">My Personal Notes</h5>
+                            <p class="card-text mb-3">Quick insights, summaries, and learnings from my studies and projects.</p>
+                            <a href="{% url 'notes_list' %}" class="btn btn-sm btn-outline-info mt-auto">View Notes <i class="fas fa-arrow-right ms-2"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+
+                {# Card for meeting #}
+                <div class="col">
+                    <div class="card text-center h-100 shadow-sm p-3">
+                        <div class="card-body">
+                            <i class="fas fa-sticky-note fa-3x text-info mb-3"></i>
+                            <h5 class="card-title fw-bold">Meetings</h5>
+                            <p class="card-text mb-3">Quick insights, summaries, and learnings from my studies and projects.</p>
+                            <a href="{% url 'meetings_list' %}" class="btn btn-sm btn-outline-info mt-auto">View Notes <i class="fas fa-arrow-right ms-2"></i></a>
+                        </div>
+                    </div>
+                </div>
+
+                {# Card for Documents #}
+                <div class="col">
+                    <div class="card text-center h-100 shadow-sm p-3">
+                        <div class="card-body">
+                            <i class="fas fa-file-alt fa-3x text-warning mb-3"></i>
+                            <h5 class="card-title fw-bold">Important Documents</h5>
+                            <p class="card-text mb-3">Access reports, research papers, and compiled documents.</p>
+                            <a href="{% url 'documents_list' %}" class="btn btn-sm btn-outline-warning mt-auto">View Documents <i class="fas fa-arrow-right ms-2"></i></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    ---
+
+    {# Testimonials Carousel Section #}
+    <section class="py-5" data-animate>
+        <div class="container my-5">
+            <h2 class="text-center fw-bold mb-5">What Clients Say</h2>
+            <div id="testimonialCarousel" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000"> {# Auto-cycle every 5 seconds #}
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <div class="testimonial-content carousel-item"> {# Reusing carousel-item for styling #}
+                            <p>"Robert's insights on our data analytics project were invaluable. The deliverables were professional, accurate, and truly helped us make informed decisions. Highly recommended!"</p>
+                            <h5>- Thomas Mbewe. (CEO, Transact Ltd.)</h5>
+                        </div>
+                    </div>
+                 
+                </div>
+                <button class="carousel-control-prev" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Previous</span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#testimonialCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+                    <span class="visually-hidden">Next</span>
+                </button>
+                <div class="carousel-indicators">
+                    <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+                    <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+                    <button type="button" data-bs-target="#testimonialCarousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+                </div>
+            </div>
+            <div class="text-center mt-5">
+                <a href="{% url 'testimonials_list' %}" class="btn btn-outline-primary btn-lg">Read All Testimonials <i class="fas fa-users ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+
+    <hr class="my-5">
+
+    {# Call to Action / About Me Snippet #}
+    <section class="py-5 bg-dark text-white text-center" data-animate>
+        <div class="container my-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold mb-4">Ready to Collaborate?</h2>
+                <p class="lead mb-4">
+                    Whether you're looking for data-driven insights, an intelligent software solution, or a reliable web application, we are here to help. Let's discuss how my expertise can bring your vision to life.
+                </p>
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-lg me-3">Let's Talk <i class="fas fa-comment-dots ms-2"></i></a>
+                <a href="{% url 'about' %}" class="btn btn-outline-light btn-lg">Learn More About Me <i class="fas fa-info-circle ms-2"></i></a>
+            </div>
+        </div>
+    </section>
+{% endblock content %}

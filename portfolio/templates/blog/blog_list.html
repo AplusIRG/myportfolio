@@ -1,0 +1,88 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Blog - Robert Sichomba's Insights{% endblock title %}
+
+{% block meta_description %}Read Robert Sichomba's latest articles and insights on data science, machine learning, web development, education technology, and industry trends.{% endblock meta_description %}
+
+{# No extra_head or extra_js needed here, as global styles/scripts handle most functionality #}
+
+{% block content %}
+    {# Hero Section for Blog #}
+    <section class="hero d-flex align-items-center justify-content-center text-center" style="padding-top: 8rem; padding-bottom: 5rem;">
+        <div class="container" data-animate>
+            <h1 class="display-3 fw-bold mb-3">My Blog & Insights</h1>
+            <p class="lead mb-4 col-lg-8 mx-auto">
+                Sharing thoughts, tutorials, and notes in physics, mathematical methods, data science, machine learning, exploration geology and more.
+            </p>
+        </div>
+    </section>
+
+    {# Blog Posts List Section #}
+    <section class="py-5" data-animate>
+        <div class="container my-5">
+            <h2 class="text-center fw-bold mb-5">Latest Content</h2>
+            
+            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
+                {# Loop through blog posts here (example static posts below) #}
+                {% for post in blog_posts %} {# Assuming 'blog_posts' is passed from your Django view #}
+                <div class="col">
+                    <div class="blog-card h-100 d-flex flex-column">
+                        <img src="{% static post.image %}" class="card-img-top mb-3" alt="{{ post.title }}">
+                        <div class="card-body p-0 d-flex flex-column">
+                            <h5 class="card-title fw-bold">{{ post.title }}</h5>
+                            <p class="card-text text-muted mb-2"><i class="far fa-calendar-alt me-1"></i> {{ post.date|date:"F d, Y" }}</p>
+                            <p class="card-text">{{ post.summary }}</p>
+                            <div class="mt-auto pt-3"> {# Push "Read More" to the bottom #}
+                                <a href="{% url 'blog_detail' post.slug %}" class="btn btn-sm btn-outline-primary">Read More <i class="fas fa-arrow-right ms-1"></i></a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                {% empty %}
+                <div class="col-12 text-center">
+                    <p class="lead">No blog posts found yet. Check back soon for new content!</p>
+                    <a href="{% url 'contact' %}" class="btn btn-primary mt-3">Suggest a Topic <i class="fas fa-lightbulb ms-2"></i></a>
+                </div>
+                {% endfor %}
+
+                {# Static examples if you're not using a backend yet. Remove/replace with Django loop later. #}
+                
+                
+
+            {# Pagination (example - uncomment and adapt if you implement pagination) #}
+            
+            <nav aria-label="Page navigation" class="mt-5">
+                <ul class="pagination justify-content-center">
+                    <li class="page-item {% if not blog_posts.has_previous %}disabled{% endif %}">
+                        <a class="page-link" href="{% if blog_posts.has_previous %}?page={{ blog_posts.previous_page_number }}{% else %}#{% endif %}">Previous</a>
+                    </li>
+                    {% for i in blog_posts.paginator.page_range %}
+                    <li class="page-item {% if blog_posts.number == i %}active{% endif %}">
+                        <a class="page-link" href="?page={{ i }}">{{ i }}</a>
+                    </li>
+                    {% endfor %}
+                    <li class="page-item {% if not blog_posts.has_next %}disabled{% endif %}">
+                        <a class="page-link" href="{% if blog_posts.has_next %}?page={{ blog_posts.next_page_number }}{% else %}#{% endif %}">Next</a>
+                    </li>
+                </ul>
+            </nav>
+            
+        </div>
+    </section>
+
+    {# Call to Action for Newsletter or Contact #}
+    <section class="py-5 bg-dark text-white text-center" data-animate>
+        <div class="container my-5">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold mb-4">Stay Up-to-Date with My Latest Insights!</h2>
+                <p class="lead mb-4">
+                    Subscribe to my newsletter for exclusive content, new project updates, and deeper dives into the world of AI and data.
+                </p>
+                {# This could link to a newsletter signup form or your contact page #}
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-lg me-3">Subscribe Now <i class="fas fa-envelope-open-text ms-2"></i></a>
+                <a href="#" class="btn btn-outline-light btn-lg">Read More About Me <i class="fas fa-user ms-2"></i></a> {# Adjust URL as needed #}
+            </div>
+        </div>
+    </section>
+{% endblock content %}
