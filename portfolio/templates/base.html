@@ -74,6 +74,37 @@
                     <li class="nav-item">
                         <a class="nav-link {% if request.resolver_match.url_name == 'projects_list' or 'project_detail' in request.resolver_match.url_name %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'projects_list' or 'project_detail' in request.resolver_match.url_name %}page{% else %}false{% endif %}" href="{% url 'projects_list' %}">Projects</a>
                     </li>
+                    
+                    {# Resources Dropdown - Notes, Books, Documents #}
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="resourcesDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                            Resources
+                        </a>
+                        <ul class="dropdown-menu" aria-labelledby="resourcesDropdown">
+                            <li>
+                                <a class="dropdown-item {% if request.resolver_match.url_name == 'notes_list' or 'note_detail' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'notes_list' %}">
+                                    <i class="fas fa-sticky-note me-2"></i>Notes
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {% if request.resolver_match.url_name == 'books_list' or 'book_detail' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'books_list' %}">
+                                    <i class="fas fa-book me-2"></i>Books
+                                </a>
+                            </li>
+                            <li>
+                                <a class="dropdown-item {% if request.resolver_match.url_name == 'documents_list' or 'document_detail' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'documents_list' %}">
+                                    <i class="fas fa-file-alt me-2"></i>Documents
+                                </a>
+                            </li>
+                            <li><hr class="dropdown-divider"></li>
+                            <li>
+                                <a class="dropdown-item {% if request.resolver_match.url_name == 'meetings_list' or 'meeting_detail' in request.resolver_match.url_name %}active{% endif %}" href="{% url 'meetings_list' %}">
+                                    <i class="fas fa-video me-2"></i>Meetings
+                                </a>
+                            </li>
+                        </ul>
+                    </li>
+                    
                     <li class="nav-item">
                         {# Assuming testimonials_list is the name in urls.py #}
                         <a class="nav-link {% if request.resolver_match.url_name == 'testimonials_list' %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'testimonials_list' %}page{% else %}false{% endif %}" href="{% url 'testimonials_list' %}">Testimonials</a>
@@ -86,7 +117,7 @@
                         <a class="nav-link {% if request.resolver_match.url_name == 'blog_list' or 'blog_detail' in request.resolver_match.url_name %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'blog_list' or 'blog_detail' in request.resolver_match.url_name %}page{% else %}false{% endif %}" href="{% url 'blog_list' %}">Blog</a>
                     </li>
                     
-                    {# Conditional Login/Logout/Signup - Now in a dropdown #}
+                    {# Conditional Login/Logout/Signup - Complete Accounts dropdown #}
                     {% if user.is_authenticated %}
                         <li class="nav-item dropdown">
                             <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
@@ -101,6 +132,22 @@
                                 <li>
                                     <a class="dropdown-item" href="#">
                                         <i class="fas fa-cog me-2"></i>Settings
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'notes_list' %}">
+                                        <i class="fas fa-sticky-note me-2"></i>My Notes
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'books_list' %}">
+                                        <i class="fas fa-book me-2"></i>My Books
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'documents_list' %}">
+                                        <i class="fas fa-file-alt me-2"></i>My Documents
                                     </a>
                                 </li>
                                 <li><hr class="dropdown-divider"></li>
@@ -128,6 +175,22 @@
                                 <li>
                                     <a class="dropdown-item {% if request.resolver_match.url_name == 'user_signup' %}active{% endif %}" href="{% url 'signup' %}">
                                         <i class="fas fa-user-plus me-2"></i>Sign Up
+                                    </a>
+                                </li>
+                                <li><hr class="dropdown-divider"></li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'notes_list' %}">
+                                        <i class="fas fa-sticky-note me-2"></i>Notes
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'books_list' %}">
+                                        <i class="fas fa-book me-2"></i>Books
+                                    </a>
+                                </li>
+                                <li>
+                                    <a class="dropdown-item" href="{% url 'documents_list' %}">
+                                        <i class="fas fa-file-alt me-2"></i>Documents
                                     </a>
                                 </li>
                             </ul>
@@ -164,10 +227,10 @@
                 {# Add more social links as needed #}
             </div>
             <p>
-                {# Changed to privacy_policy_view for consistency #}
-                <a href="{% url 'privacy_policy_view' %}" class="me-3">Privacy Policy</a> 
-                {# Changed to terms_of_service_view for consistency #}
-                <a href="{% url 'terms_of_service_view' %}">Terms of Service</a> 
+                {# Changed to privacy #}
+                <a href="{% url 'privacy' %}" class="me-3">Privacy Policy</a> 
+                {# Changed to terms #}
+                <a href="{% url 'terms' %}">Terms of Service</a> 
             </p>
         </div>
     </footer>
