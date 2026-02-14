@@ -1,0 +1,9 @@
+services:
+  - type: web
+    name: myportfolio
+    runtime: python
+    buildCommand: |
+      pip install -r requirements.txt
+      python manage.py collectstatic --noinput
+      python manage.py migrate
+    startCommand: gunicorn myportfolio.wsgi:application
