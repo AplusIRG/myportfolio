@@ -1,0 +1,202 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - Robert Sichomba{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="padding-top: 8rem;">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h1 class="display-5 fw-bold">Dashboard</h1>
+            <p class="lead text-muted">Welcome back, {{ user.get_display_name }}</p>
+        </div>
+        <div>
+            <a href="{% url 'user_profile' %}" class="btn btn-outline-primary rounded-pill px-4 me-2">
+                <i class="fas fa-user me-2"></i>Profile
+            </a>
+            <a href="{% url 'course_list' %}" class="btn btn-primary rounded-pill px-4">
+                <i class="fas fa-plus me-2"></i>Browse Courses
+            </a>
+        </div>
+    </div>
+
+    <div class="row g-4">
+        {# Main content: courses and progress #}
+        <div class="col-lg-8">
+            {# My Courses #}
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="fw-bold mb-0">My Courses</h5>
+                        <a href="{% url 'user_courses' %}" class="btn btn-sm btn-link">View all</a>
+                    </div>
+                </div>
+                <div class="card-body px-4">
+                    {% if course_progress %}
+                        <div class="row g-3">
+                            {% for item in course_progress %}
+                            <div class="col-md-6">
+                                <div class="card border-0 bg-light rounded-4">
+                                    <div class="card-body">
+                                        <div class="d-flex justify-content-between mb-2">
+                                            <span class="badge bg-primary">{{ item.course.course_code }}</span>
+                                            <span class="small text-muted">
+                                                {{ item.progress.chapters_completed }}/{{ item.progress.total_chapters }} lessons
+                                            </span>
+                                        </div>
+                                        <h6 class="fw-bold mb-2">{{ item.course.title }}</h6>
+                                        <div class="progress mb-2" style="height: 6px;">
+                                            <div class="progress-bar bg-success" style="width: {{ item.percentage }}%;"></div>
+                                        </div>
+                                        <div class="d-flex justify-content-between align-items-center mt-3">
+                                            <small class="text-muted">
+                                                <i class="fas fa-clock me-1"></i> {{ item.progress.time_spent }} min
+                                            </small>
+                                            <a href="{% url 'course_module_detail' course_slug=item.course.slug module_id=item.progress.current_chapter %}" 
+                                               class="btn btn-sm btn-outline-primary rounded-pill">
+                                                Continue
+                                            </a>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            {% empty %}
+                            <div class="col-12 text-center py-4">
+                                <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                                <p class="mb-0">You are not enrolled in any courses.</p>
+                                <a href="{% url 'course_list' %}" class="btn btn-primary mt-3 rounded-pill">
+                                    Browse Courses
+                                </a>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        <div class="text-center py-4">
+                            <i class="fas fa-book-open fa-3x text-muted mb-3"></i>
+                            <p class="mb-0">You are not enrolled in any courses.</p>
+                            <a href="{% url 'course_list' %}" class="btn btn-primary mt-3 rounded-pill">
+                                Browse Courses
+                            </a>
+                        </div>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Upcoming Assignments #}
+            {% if upcoming_assignments %}
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-header bg-transparent border-0 pt-4 px-4">
+                    <h5 class="fw-bold mb-0">Upcoming Assignments</h5>
+                </div>
+                <div class="card-body px-4">
+                    <div class="list-group list-group-flush">
+                        {% for assignment in upcoming_assignments %}
+                        <a href="{% url 'assignment_detail' assignment.assignment_id %}" 
+                           class="list-group-item list-group-item-action d-flex justify-content-between align-items-center px-0">
+                            <div>
+                                <h6 class="fw-bold mb-1">{{ assignment.title }}</h6>
+                                <small class="text-muted">{{ assignment.course.title }} • {{ assignment.get_assignment_type_display }}</small>
+                            </div>
+                            <div class="text-end">
+                                <span class="badge bg-warning text-dark">Due {{ assignment.due_date|date:"M d, Y" }}</span>
+                                <br>
+                                <small class="text-muted">{{ assignment.max_points }} pts</small>
+                            </div>
+                        </a>
+                        {% endfor %}
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        {# Sidebar #}
+        <div class="col-lg-4">
+            {# Quick Stats #}
+            <div class="card border-0 shadow-sm rounded-4 mb-4">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3">Learning Stats</h6>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Enrolled courses</span>
+                        <span class="fw-bold">{{ enrollments|length }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Completed courses</span>
+                        <span class="fw-bold">{{ completed_count }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between mb-2">
+                        <span class="text-muted">Assignments submitted</span>
+                        <span class="fw-bold">{{ total_submissions }}</span>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Certificates earned</span>
+                        <span class="fw-bold">{{ certificates_count }}</span>
+                    </div>
+                    <hr>
+                    <div class="d-flex justify-content-between">
+                        <span class="text-muted">Current streak</span>
+                        <span class="fw-bold">{{ streak_days }} days</span>
+                    </div>
+                </div>
+            </div>
+
+            {# Certificates #}
+            <div class="card border-0 shadow-sm rounded-4">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3">Recent Certificates</h6>
+                    {% for cert in recent_certificates %}
+                    <div class="d-flex align-items-center mb-3">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-certificate fa-2x text-primary"></i>
+                        </div>
+                        <div class="flex-grow-1 ms-3">
+                            <h6 class="fw-bold mb-0">{{ cert.course.title }}</h6>
+                            <small class="text-muted">{{ cert.issued_date|date:"M Y" }}</small>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted small mb-0">No certificates yet. Keep learning!</p>
+                    {% endfor %}
+                    {% if certificates_count > 0 %}
+                    <a href="{% url 'user_certificates' %}" class="btn btn-sm btn-outline-primary w-100 mt-3 rounded-pill">
+                        View all certificates
+                    </a>
+                    {% endif %}
+                </div>
+            </div>
+
+            {# Instructor Quick Links #}
+            {% if user.role == 'instructor' %}
+            <div class="card border-0 shadow-sm rounded-4 mt-4">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3">Instructor Tools</h6>
+                    <div class="d-grid gap-2">
+                        <a href="{% url 'instructor_course_create' %}" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="fas fa-plus-circle me-2"></i>Create New Course
+                        </a>
+                        <a href="{% url 'admin:portfolio_assignment_add' %}" class="btn btn-outline-primary btn-sm rounded-pill">
+                            <i class="fas fa-tasks me-2"></i>Add Assignment
+                        </a>
+                        <a href="{% url 'admin:portfolio_course_changelist' %}" class="btn btn-outline-secondary btn-sm rounded-pill">
+                            <i class="fas fa-edit me-2"></i>Manage Courses
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+
+            {# Parent Dashboard Link #}
+            {% if user.role == 'parent' %}
+            <div class="card border-0 shadow-sm rounded-4 mt-4">
+                <div class="card-body p-4">
+                    <h6 class="fw-bold mb-3">Parent Tools</h6>
+                    <a href="{% url 'parent_dashboard' %}" class="btn btn-outline-primary w-100 rounded-pill">
+                        <i class="fas fa-users me-2"></i>Go to Parent Dashboard
+                    </a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+{% endblock %}
