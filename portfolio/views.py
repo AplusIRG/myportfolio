@@ -42,43 +42,53 @@ from .forms import (
 # CORE PORTFOLIO VIEWS
 # ============================================================================
 
-from django.template.exceptions import TemplateDoesNotExist
+import logging
+logger = logging.getLogger(__name__)
 
 def portfolio_home(request):
+    """Home page – safe from database errors."""
     if not request.user.is_authenticated:
         return redirect('about')
-
+    
     user = request.user
-    role = getattr(user, 'role', 'visitor')
-
-    context = {}
+    context = {
+        'featured_projects': [],
+        'latest_blog_posts': [],
+        'testimonials': [],
+        'featured_courses': [],
+        'page_title': "Welcome to Your Portfolio Dashboard"
+    }
+    
+    # Each query is wrapped in try/except – if any fails, we just log and continue
     try:
-        if role == 'visitor':
-            context.update({
-                'featured_projects': Project.objects.filter(is_featured=True, status='completed')[:3],
-                'latest_blog_posts': BlogPost.objects.filter(is_published=True, access_level__in=['public','registered']).order_by('-created_at')[:3],
-                'testimonials': Testimonial.objects.filter(is_featured=True)[:3],
-                'featured_courses': Course.objects.filter(is_featured=True, is_active=True)[:3],
-                'page_title': "Welcome to Your Portfolio Dashboard"
-            })
-            try:
-                return render(request, 'home.html', context)
-            except TemplateDoesNotExist:
-                return render(request, 'portfolio/home.html', context)
-
-        elif role in ['student', 'instructor', 'parent']:
-            return redirect('dashboard')
-        else:
-            try:
-                return render(request, 'dashboard.html')
-            except TemplateDoesNotExist:
-                return render(request, 'portfolio/dashboard.html')
-
+        context['featured_projects'] = list(Project.objects.filter(is_featured=True, status='completed')[:3])
     except Exception as e:
-        print(f"[portfolio_home ERROR] User: {user.email}, Role: {role}, Error: {e}")
-        messages.error(request, "An error occurred loading your dashboard.")
-        return redirect('about')
-
+        logger.error(f"Error fetching featured_projects: {e}")
+    
+    try:
+        context['latest_blog_posts'] = list(BlogPost.objects.filter(
+            is_published=True,
+            access_level__in=['public', 'registered']
+        ).order_by('-created_at')[:3])
+    except Exception as e:
+        logger.error(f"Error fetching blog posts: {e}")
+    
+    try:
+        context['testimonials'] = list(Testimonial.objects.filter(is_featured=True)[:3])
+    except Exception as e:
+        logger.error(f"Error fetching testimonials: {e}")
+    
+    try:
+        context['featured_courses'] = list(Course.objects.filter(is_featured=True, is_active=True)[:3])
+    except Exception as e:
+        logger.error(f"Error fetching courses: {e}")
+    
+    if user.role == 'visitor':
+        return render(request, 'home.html', context)
+    elif user.role in ['student', 'instructor', 'parent']:
+        return redirect('dashboard')
+    else:
+        return render(request, 'dashboard.html', context)
 
 def about(request):
     """Public about page."""
