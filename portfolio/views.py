@@ -18,6 +18,7 @@ import datetime
 import json
 
 import os
+from django.utils.text import slugify
 
 # Import all models
 from .models import (
@@ -1719,3 +1720,16 @@ def instructor_grade_submission(request, submission_id):
         'page_title': f'Grade {submission.user.get_display_name()}'
     }
     return render(request, 'courses/instructor/grade_submission.html', context)
+
+
+
+
+@login_required
+def parent_notifications(request):
+    """Parent notification preferences (placeholder)."""
+    if request.user.role != 'parent':
+        messages.error(request, "Access denied.")
+        return redirect('dashboard')
+    
+    messages.info(request, "Notification settings are under development.")
+    return redirect('parent_dashboard')
