@@ -7,7 +7,6 @@ from pathlib import Path
 import dj_database_url
 from decouple import config
 
-
 # Build paths inside the project
 BASE_DIR = Path(__file__).resolve().parent.parent
 
@@ -71,30 +70,25 @@ WSGI_APPLICATION = 'myportfolio.wsgi.application'
 
 # ========== DATABASE CONFIGURATION ==========
 # Use PostgreSQL on Render, SQLite locally
-
-
-DATABASE_URL = os.environ.get('DATABASE_URL')
-
-# Fix missing port
-if DATABASE_URL and '@' in DATABASE_URL and DATABASE_URL.count(':') == 2:
-    # Add default port 5432 if missing
-    parts = DATABASE_URL.split('@')
-    user_pass = parts[0]
-    host_db = parts[1]
-    if '/' in host_db:
-        host = host_db.split('/')[0]
-        dbname = host_db.split('/')[1]
-        if ':' not in host:
-            DATABASE_URL = f"{user_pass}@{host}:5432/{dbname}"
-
-DATABASES = {
-    'default': dj_database_url.config(
-        default=DATABASE_URL,
-        conn_max_age=600,
-        ssl_require=True
-    )
-}
-
+DATABASE_URL = config('DATABASE_URL')
+if DATABASE_URL:
+    # Render PostgreSQL
+    DATABASES = {
+        'default': dj_database_url.config(
+            default=DATABASE_URL,
+            conn_max_age=600,
+            conn_health_checks=True,
+            ssl_require=True
+        )
+    }
+else:
+    # Local SQLite
+    DATABASES = {
+        'default': {
+            'ENGINE': 'django.db.backends.sqlite3',
+            'NAME': BASE_DIR / 'db.sqlite3',
+        }
+    }
 
 # ========== PASSWORD VALIDATION ==========
 AUTH_PASSWORD_VALIDATORS = [
@@ -146,10 +140,3 @@ if not DEBUG:
 # ========== OTHER SETTINGS ==========
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/login/'
-
-
-
-
-
-
-
