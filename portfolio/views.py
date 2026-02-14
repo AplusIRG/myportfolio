@@ -42,55 +42,41 @@ from .forms import (
 # CORE PORTFOLIO VIEWS
 # ============================================================================
 
+from django.template.exceptions import TemplateDoesNotExist
+
 def portfolio_home(request):
-    """
-    Home page:
-    - Redirects to 'about' if not authenticated
-    - Shows dashboard if authenticated
-    - Handles missing role or template errors safely
-    """
     if not request.user.is_authenticated:
         return redirect('about')
-    
+
     user = request.user
-    user_role = getattr(user, 'role', 'visitor')  # default to 'visitor' if missing
+    role = getattr(user, 'role', 'visitor')
 
+    context = {}
     try:
-        if user_role == 'visitor':
-            # Portfolio visitor dashboard
-            featured_projects = Project.objects.filter(is_featured=True, status='completed')[:3]
-            latest_blog_posts = BlogPost.objects.filter(
-                is_published=True,
-                access_level__in=['public', 'registered']
-            ).order_by('-created_at')[:3]
-            testimonials = Testimonial.objects.filter(is_featured=True)[:3]
-            featured_courses = Course.objects.filter(is_featured=True, is_active=True)[:3]
-
-            context = {
-                'featured_projects': featured_projects,
-                'latest_blog_posts': latest_blog_posts,
-                'testimonials': testimonials,
-                'featured_courses': featured_courses,
+        if role == 'visitor':
+            context.update({
+                'featured_projects': Project.objects.filter(is_featured=True, status='completed')[:3],
+                'latest_blog_posts': BlogPost.objects.filter(is_published=True, access_level__in=['public','registered']).order_by('-created_at')[:3],
+                'testimonials': Testimonial.objects.filter(is_featured=True)[:3],
+                'featured_courses': Course.objects.filter(is_featured=True, is_active=True)[:3],
                 'page_title': "Welcome to Your Portfolio Dashboard"
-            }
-            # Try both possible template locations
+            })
             try:
                 return render(request, 'home.html', context)
-            except:
+            except TemplateDoesNotExist:
                 return render(request, 'portfolio/home.html', context)
 
-        elif user_role in ['student', 'instructor', 'parent']:
+        elif role in ['student', 'instructor', 'parent']:
             return redirect('dashboard')
         else:
             try:
                 return render(request, 'dashboard.html')
-            except:
+            except TemplateDoesNotExist:
                 return render(request, 'portfolio/dashboard.html')
 
     except Exception as e:
-        # Log the error
-        print(f"[portfolio_home ERROR] User: {user.email}, Role: {user_role}, Error: {e}")
-        messages.error(request, "Sorry, an error occurred while loading your dashboard.")
+        print(f"[portfolio_home ERROR] User: {user.email}, Role: {role}, Error: {e}")
+        messages.error(request, "An error occurred loading your dashboard.")
         return redirect('about')
 
 
