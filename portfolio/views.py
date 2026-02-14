@@ -46,11 +46,16 @@ import logging
 logger = logging.getLogger(__name__)
 
 def portfolio_home(request):
-    """Home page – safe from database errors."""
+    """Home page – fully safe and error-resilient."""
+    
+    # If user is anonymous, redirect to about
     if not request.user.is_authenticated:
         return redirect('about')
     
     user = request.user
+    # Ensure role is always available
+    role = getattr(user, 'role', 'visitor')
+    
     context = {
         'featured_projects': [],
         'latest_blog_posts': [],
@@ -58,34 +63,35 @@ def portfolio_home(request):
         'featured_courses': [],
         'page_title': "Welcome to Your Portfolio Dashboard"
     }
-    
-    # Each query is wrapped in try/except – if any fails, we just log and continue
+
+    # Wrap each query in try/except to prevent 500 errors
     try:
         context['featured_projects'] = list(Project.objects.filter(is_featured=True, status='completed')[:3])
     except Exception as e:
         logger.error(f"Error fetching featured_projects: {e}")
-    
+
     try:
         context['latest_blog_posts'] = list(BlogPost.objects.filter(
             is_published=True,
             access_level__in=['public', 'registered']
         ).order_by('-created_at')[:3])
     except Exception as e:
-        logger.error(f"Error fetching blog posts: {e}")
-    
+        logger.error(f"Error fetching latest_blog_posts: {e}")
+
     try:
         context['testimonials'] = list(Testimonial.objects.filter(is_featured=True)[:3])
     except Exception as e:
         logger.error(f"Error fetching testimonials: {e}")
-    
+
     try:
         context['featured_courses'] = list(Course.objects.filter(is_featured=True, is_active=True)[:3])
     except Exception as e:
-        logger.error(f"Error fetching courses: {e}")
-    
-    if user.role == 'visitor':
+        logger.error(f"Error fetching featured_courses: {e}")
+
+    # Role-based rendering
+    if role == 'visitor':
         return render(request, 'home.html', context)
-    elif user.role in ['student', 'instructor', 'parent']:
+    elif role in ['student', 'instructor', 'parent']:
         return redirect('dashboard')
     else:
         return render(request, 'dashboard.html', context)
