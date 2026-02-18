@@ -1300,20 +1300,7 @@ def custom_500(request):
     return render(request, 'errors/500.html', status=500)
 
 
-# ============================================================================
-# TEMPLATE FILTERS (if needed)
-# ============================================================================
 
-from django import template
-register = template.Library()
-
-@register.filter
-def get_item(dictionary, key):
-    return dictionary.get(key)
-
-@register.filter
-def split(value, separator):
-    return value.split(separator)
 
 
 
