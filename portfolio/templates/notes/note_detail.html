@@ -1,124 +1,190 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}{{ note.title }} - My Notes - Robert Sichomba{% endblock title %}
-
-{% block meta_description %}{{ note.summary|truncatechars:160 }}{% endblock meta_description %}
-
-{% block content %}
-    {# Note Detail Section #}
-    <section class="py-5">
-        <div class="container my-5">
-            <nav aria-label="breadcrumb">
-                <ol class="breadcrumb">
-                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
-                    <li class="breadcrumb-item"><a href="{% url 'notes_list' %}">Notes & Insights</a></li>
-                    <li class="breadcrumb-item active" aria-current="page">{{ note.title }}</li>
-                </ol>
-            </nav>
-
-            <div class="row gx-5 align-items-start"> {# Use align-items-start to keep content at the top #}
-                {# Note Header and Image (if applicable) #}
-                <div class="col-md-8 offset-md-2 text-center mb-4" data-animate>
-                    <h1 class="display-4 fw-bold mb-3">{{ note.title }}</h1>
-                    <p class="lead text-muted mb-4">
-                        <i class="far fa-calendar-alt me-2"></i> Published: {{ note.created_at|date:"F d, Y" }}
-                        {% if note.category %}<span class="ms-3"><i class="fas fa-tag me-2"></i> Category: {{ note.category }}</span>{% endif %}
-                    </p>
-                    {% if note.image %}
-                        <img src="{{ note.image.url }}" class="img-fluid rounded shadow-lg mb-4 note-detail-banner" alt="Banner for {{ note.title }}">
-                    {% endif %}
-                </div>
-            </div>
-
-            <div class="row justify-content-center">
-                <div class="col-lg-8" data-animate>
-                    {# Note Content #}
-                    <div class="note-full-content mb-5">
-                        <div class="lead-text">
-                            {{ note.content|safe }} {# Use |safe if your content contains HTML #}
-                        </div>
-                    </div>
-
-                    {% if note.tags.all %}
-                    <div class="mb-4">
-                        <h6 class="fw-bold">Tags:</h6>
-                        {% for tag in note.tags.all %}
-                            {# Link to a tag-filtered notes list if you implement it #}
-                            <span class="badge bg-secondary text-decoration-none me-1 mb-1">{{ tag.name }}</span>
-                        {% endfor %}
-                    </div>
-                    {% endif %}
-
-                    <div class="d-flex justify-content-between align-items-center">
-                        <a href="{% url 'notes_list' %}" class="btn btn-outline-secondary btn-lg">
-                            <i class="fas fa-arrow-left me-2"></i> Back to All Notes
-                        </a>
-                        {# Optional: Edit/Share buttons if applicable, e.g., for admin users #}
-                    </div>
-
-                    {# --- Access Level Warning (if not public) --- #}
-                    {% if note.access_level != 'public' %}
-                        {% if not user.is_authenticated %}
-                        <div class="alert alert-warning mt-5 text-center" role="alert">
-                            <i class="fas fa-lock me-2"></i> This content is for **Registered Users Only**. Please <a href="{% url 'login' %}" class="alert-link">log in</a> or <a href="{% url 'signup' %}" class="alert-link">sign up</a> to view the full details.
-                        </div>
-                        {% elif note.access_level == 'private' and not user.is_superuser and not user.is_staff %}
-                        <div class="alert alert-danger mt-5 text-center" role="alert">
-                            <i class="fas fa-user-lock me-2"></i> This content is **Private (Admin Only)**. You do not have permission to view it.
-                        </div>
-                        {% endif %}
-                    {% endif %}
-                </div>
-            </div>
-        </div>
-    </section>
-
-    {# Optional: Related Notes/Content Section #}
-    {#
-    <section class="py-5 bg-light" data-animate>
-        <div class="container my-5">
-            <h3 class="text-center fw-bold mb-5">Related Notes & Resources</h3>
-            <div class="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                {# Loop through related notes here #}
-            </div>
-        </div>
-    </section>
-    #}
-
-    {# Call to Action for Other Resources #}
-    <section class="py-5 bg-dark text-white text-center" data-animate>
-        <div class="container my-5">
-            <div class="col-lg-8 mx-auto">
-                <h2 class="fw-bold mb-4">Explore More Insights</h2>
-                <p class="lead mb-4">
-                    My blog offers more in-depth articles, and my projects showcase practical applications of these concepts.
-                </p>
-                <a href="{% url 'blog_list' %}" class="btn btn-primary btn-lg me-3">Visit My Blog <i class="fas fa-newspaper ms-2"></i></a>
-                <a href="{% url 'projects_list' %}" class="btn btn-outline-light btn-lg">View Projects <i class="fas fa-laptop-code ms-2"></i></a>
-            </div>
-        </div>
-    </section>
-{% endblock content %}
+{% block title %}{{ note.title }} - {{ block.super }}{% endblock %}
 
 {% block extra_head %}
 <style>
-    .note-detail-banner {
-        max-height: 400px; /* Max height for banners */
-        object-fit: cover; /* Ensures image covers area without distortion */
-        width: 100%; /* Make image span full width of its column */
-    }
-    .lead-text p { /* For styling the actual description content */
-        font-size: 1.1rem;
+    .note-content {
+        font-family: 'Georgia', 'Times New Roman', serif;
         line-height: 1.8;
-        color: #495057;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
     }
-    .note-full-content ul, .note-full-content ol {
-        padding-left: 20px;
+    .note-content h1, .note-content h2, .note-content h3 {
+        font-family: 'Inter', sans-serif;
+        margin-top: 2rem;
         margin-bottom: 1rem;
+        font-weight: 600;
+        color: #0d6efd;
     }
-    .note-full-content li {
-        margin-bottom: 0.5rem;
+    .note-content h1 { font-size: 2.5rem; }
+    .note-content h2 { font-size: 2rem; border-bottom: 1px solid #eee; padding-bottom: 0.5rem; }
+    .note-content h3 { font-size: 1.5rem; }
+    .note-content p { margin-bottom: 1.5rem; }
+    .note-content ul, .note-content ol { margin-bottom: 1.5rem; padding-left: 2rem; }
+    .note-content li { margin-bottom: 0.5rem; }
+    .note-content table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 2rem 0;
+    }
+    .note-content th {
+        background-color: #0d6efd;
+        color: white;
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    .note-content td {
+        padding: 0.75rem;
+        border: 1px solid #dee2e6;
+    }
+    .note-content pre {
+        background: #f8f9fa;
+        border: 1px solid #e9ecef;
+        border-radius: 4px;
+        padding: 1rem;
+        overflow-x: auto;
+        font-family: 'Courier New', monospace;
+    }
+    .note-content code {
+        background: #f8f9fa;
+        padding: 0.2rem 0.4rem;
+        border-radius: 3px;
+        font-size: 0.9em;
+    }
+    .note-content figure {
+        margin: 2rem 0;
+        text-align: center;
+    }
+    .note-content figure img {
+        max-width: 100%;
+        height: auto;
+        border: 1px solid #dee2e6;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+    .note-content figcaption {
+        margin-top: 0.5rem;
+        font-style: italic;
+        color: #6c757d;
+    }
+    .note-content .exercise {
+        background: #e9ecef;
+        padding: 1.5rem;
+        border-radius: 8px;
+        margin: 2rem 0;
+    }
+    .note-content .exercise ol {
+        margin-bottom: 0;
+    }
+    .note-content .answer {
+        color: #28a745;
+        font-weight: bold;
+    }
+    @media print {
+        .navbar, .footer, .sidebar, .btn { display: none; }
+        body { background: white; }
+        .note-content { max-width: 100%; }
+        a { text-decoration: none; color: black; }
     }
 </style>
-{% endblock extra_head %}
+{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="padding-top: 8rem;">
+    <div class="row">
+        {# Main content #}
+        <div class="col-lg-8">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+                    <li class="breadcrumb-item"><a href="{% url 'notes_list' %}">Notes</a></li>
+                    {% if note.course %}
+                    <li class="breadcrumb-item"><a href="{% url 'course_detail' note.course.slug %}">{{ note.course.code }}</a></li>
+                    {% endif %}
+                    <li class="breadcrumb-item active">{{ note.title }}</li>
+                </ol>
+            </nav>
+
+            <h1 class="display-5 fw-bold mb-3">{{ note.title }}</h1>
+            <p class="text-muted mb-4">
+                <i class="fas fa-user me-2"></i> {{ note.author.get_display_name }}
+                <i class="fas fa-calendar ms-3 me-2"></i> {{ note.created_at|date:"F d, Y" }}
+                {% if note.course %}
+                <a href="{% url 'course_detail' note.course.slug %}" class="badge bg-purple text-decoration-none ms-3" style="background-color: #6f42c1;">
+                    <i class="fas fa-graduation-cap me-1"></i> {{ note.course.code }}
+                </a>
+                {% endif %}
+            </p>
+
+            {# Render the HTML content safely #}
+            <div class="note-content">
+                {{ note.content|safe }}
+            </div>
+
+            {# Tags #}
+            {% if note.tags %}
+            <div class="mt-5">
+                <h5>Tags</h5>
+                {% for tag in note.tags.split %}
+                <span class="badge bg-secondary me-1">{{ tag }}</span>
+                {% endfor %}
+            </div>
+            {% endif %}
+
+            {# Navigation buttons #}
+            <div class="d-flex justify-content-between mt-5">
+                <a href="{% url 'notes_list' %}" class="btn btn-outline-primary">
+                    <i class="fas fa-arrow-left me-2"></i>Back to Notes
+                </a>
+                <button onclick="window.print()" class="btn btn-outline-secondary">
+                    <i class="fas fa-print me-2"></i>Print / Save PDF
+                </button>
+            </div>
+        </div>
+
+        {# Sidebar with course context #}
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 100px;">
+                {% if note.course %}
+                <div class="card border-0 shadow-sm rounded-4 mb-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">
+                            <i class="fas fa-graduation-cap me-2 text-primary"></i>
+                            Related Course
+                        </h5>
+                        <h6>{{ note.course.title }}</h6>
+                        <p class="small text-muted">{{ note.course.code }} • {{ note.course.get_level_display }}</p>
+                        <a href="{% url 'course_detail' note.course.slug %}" class="btn btn-sm btn-outline-primary rounded-pill w-100">
+                            View Course
+                        </a>
+                    </div>
+                </div>
+                {% endif %}
+
+                <div class="card border-0 shadow-sm rounded-4">
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-3">Share</h5>
+                        <div class="d-flex gap-2">
+                            <a href="https://twitter.com/intent/tweet?text={{ note.title }}&url={{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-dark rounded-circle">
+                                <i class="fab fa-twitter"></i>
+                            </a>
+                            <a href="https://www.facebook.com/sharer/sharer.php?u={{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-dark rounded-circle">
+                                <i class="fab fa-facebook-f"></i>
+                            </a>
+                            <a href="https://www.linkedin.com/sharing/share-offsite/?url={{ request.build_absolute_uri }}" target="_blank" class="btn btn-outline-dark rounded-circle">
+                                <i class="fab fa-linkedin-in"></i>
+                            </a>
+                            <button onclick="navigator.clipboard.writeText(window.location.href); alert('Link copied!');" class="btn btn-outline-dark rounded-circle">
+                                <i class="fas fa-link"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -6,24 +6,27 @@
 {% block content %}
 <div class="container-fluid py-5" style="padding-top: 8rem;">
     <div class="row">
-        {# Sidebar with module list #}
+        {# Sidebar with module list (sticky) #}
         <div class="col-lg-3 mb-4">
             <div class="card border-0 shadow-sm rounded-4 sticky-top" style="top: 100px;">
                 <div class="card-body p-4">
                     <h5 class="fw-bold mb-3">{{ course.title }}</h5>
                     <p class="small text-muted mb-4">{{ course.course_code }}</p>
                     
-                    <div class="progress mb-3" style="height: 6px;">
-                        <div class="progress-bar bg-success" style="width: {{ progress.calculate_progress }}%;"></div>
+                    <div class="progress mb-3" style="height: 8px;">
+                        <div class="progress-bar bg-success" style="width: {{ progress.progress_percentage|floatformat:0 }}%;"></div>
                     </div>
-                    <p class="small text-muted mb-4">{{ progress.chapters_completed }}/{{ progress.total_chapters }} lessons completed</p>
+                    <p class="small text-muted mb-4">
+                        <i class="fas fa-check-circle me-1 text-success"></i> 
+                        {{ progress.chapters_completed }}/{{ progress.total_chapters }} lessons completed
+                    </p>
                     
                     <h6 class="fw-bold mb-3">Course Content</h6>
                     <div class="accordion" id="moduleAccordion">
                         {% for mod in course.modules.all %}
                         <div class="accordion-item border-0 mb-2">
                             <h2 class="accordion-header" id="heading{{ mod.id }}">
-                                <button class="accordion-button {% if mod.id != module.id %}collapsed{% endif %} bg-light rounded-3 p-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ mod.id }}">
+                                <button class="accordion-button {% if mod.id != module.id %}collapsed{% endif %} bg-light rounded-3 p-3" type="button" data-bs-toggle="collapse" data-bs-target="#collapse{{ mod.id }}" aria-expanded="{% if mod.id == module.id %}true{% else %}false{% endif %}">
                                     <div class="d-flex w-100 justify-content-between align-items-center">
                                         <span class="fw-bold small">{{ mod.title }}</span>
                                         <span class="badge bg-primary rounded-pill">{{ mod.lessons.count }}</span>
@@ -33,12 +36,12 @@
                             <div id="collapse{{ mod.id }}" class="accordion-collapse collapse {% if mod.id == module.id %}show{% endif %}" data-bs-parent="#moduleAccordion">
                                 <div class="accordion-body px-0 py-2">
                                     <div class="list-group list-group-flush">
-                                        {% for lesson in mod.lessons.all %}
-                                        <a href="{% url 'lesson_detail' course.slug lesson.slug %}" 
-                                           class="list-group-item list-group-item-action border-0 px-3 py-2 rounded-3 {% if lesson.id == current_lesson.id %}active{% endif %}">
+                                        {% for lsn in mod.lessons.all %}
+                                        <a href="{% url 'lesson_detail' course.slug lsn.slug %}" 
+                                           class="list-group-item list-group-item-action border-0 px-3 py-2 rounded-3 {% if lsn.id == current_lesson.id %}active{% endif %}">
                                             <div class="d-flex align-items-center">
-                                                <i class="fas fa-{% if lesson.id in progress.completed_lessons %}check-circle text-success{% else %}play-circle text-primary{% endif %} me-2"></i>
-                                                <span class="small">{{ lesson.title }}</span>
+                                                <i class="fas fa-{% if lsn.id in progress.completed_lessons %}check-circle text-success{% else %}play-circle text-primary{% endif %} me-2"></i>
+                                                <span class="small">{{ lsn.title }}</span>
                                             </div>
                                         </a>
                                         {% endfor %}
@@ -52,7 +55,7 @@
             </div>
         </div>
 
-        {# Main content: lessons list #}
+        {# Main content: module description and lessons list #}
         <div class="col-lg-9">
             <div class="card border-0 shadow-sm rounded-4">
                 <div class="card-body p-4 p-md-5">
@@ -69,7 +72,7 @@
                     <p class="lead mb-5">{{ module.description }}</p>
                     {% endif %}
                     
-                    <h5 class="fw-bold mb-4">Lessons</h5>
+                    <h5 class="fw-bold mb-4">Lessons in this module</h5>
                     
                     <div class="list-group">
                         {% for lesson in lessons %}
@@ -99,6 +102,29 @@
                         </div>
                         {% endfor %}
                     </div>
+
+                    {# Navigation to next/previous module #}
+                    {% with prev_module=module.get_previous_module next_module=module.get_next_module %}
+                    <div class="d-flex justify-content-between align-items-center mt-5">
+                        {% if prev_module %}
+                        <a href="{% url 'course_module_detail' course.slug prev_module.id %}" class="btn btn-outline-primary rounded-pill">
+                            <i class="fas fa-arrow-left me-2"></i> Previous Module
+                        </a>
+                        {% else %}
+                        <div></div>
+                        {% endif %}
+                        
+                        {% if next_module %}
+                        <a href="{% url 'course_module_detail' course.slug next_module.id %}" class="btn btn-primary rounded-pill">
+                            Next Module <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                        {% else %}
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-success rounded-pill">
+                            <i class="fas fa-check me-2"></i> Course Completed!
+                        </a>
+                        {% endif %}
+                    </div>
+                    {% endwith %}
                 </div>
             </div>
         </div>
