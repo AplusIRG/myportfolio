@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Login - Access Your Account{% endblock title %}
+{% block title %}Login - Access Your Account{% endblock %}
 
-{% block meta_description %}Log in to your Robert Sichomba portfolio account to manage settings, access exclusive content, and track your activity.{% endblock meta_description %}
+{% block meta_description %}Log in to your Robert Sichomba portfolio account to manage settings, access exclusive content, and track your activity.{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -22,7 +22,7 @@
 {% endblock %}
 
 {% block content %}
-    {# Hero Section for Login #}
+    {# Hero Section #}
     <section class="hero d-flex align-items-center justify-content-center text-center" style="padding-top: 8rem; padding-bottom: 5rem;">
         <div class="container" data-animate>
             <h1 class="display-4 fw-bold mb-3">Welcome Back!</h1>
@@ -146,18 +146,17 @@
             </p>
         </div>
     </section>
-{% endblock content %}
+{% endblock %}
 
 {% block extra_js %}
 <script>
-    // Initialize form fields with proper styling
     document.addEventListener('DOMContentLoaded', function() {
         // Add Bootstrap classes to form fields
         const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"]');
         inputs.forEach(input => {
             if (!input.classList.contains('form-control')) {
                 input.classList.add('form-control');
-                input.style.paddingLeft = '3rem'; // Make room for icons
+                input.style.paddingLeft = '3rem';
             }
         });
         
@@ -168,4 +167,4 @@
         }
     });
 </script>
-{% endblock extra_js %}
+{% endblock %}

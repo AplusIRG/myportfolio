@@ -1,9 +1,9 @@
 {% extends 'base.html' %}
 {% load static %}
 
-{% block title %}Sign Up - Create Your Account{% endblock title %}
+{% block title %}Sign Up - Create Your Account{% endblock %}
 
-{% block meta_description %}Create an account to access exclusive content, track project progress, and personalize your experience with Robert Sichomba's portfolio.{% endblock meta_description %}
+{% block meta_description %}Create an account to access exclusive content, track project progress, and personalize your experience with Robert Sichomba's portfolio.{% endblock %}
 
 {% block extra_head %}
 <style>
@@ -21,7 +21,7 @@
 {% endblock %}
 
 {% block content %}
-    {# Hero Section for Sign Up #}
+    {# Hero Section #}
     <section class="hero d-flex align-items-center justify-content-center text-center" style="padding-top: 8rem; padding-bottom: 5rem;">
         <div class="container" data-animate>
             <h1 class="display-4 fw-bold mb-3">Join Our Community</h1>
@@ -186,7 +186,7 @@
         </div>
     </section>
 
-    {# Benefits of Signing Up Section #}
+    {# Benefits Section #}
     <section class="bg-light py-5" data-animate>
         <div class="container my-5 text-center">
             <h2 class="fw-bold mb-5">Why Create an Account?</h2>
@@ -215,7 +215,7 @@
             </div>
         </div>
     </section>
-{% endblock content %}
+{% endblock %}
 
 {% block extra_js %}
 <script>
@@ -228,10 +228,8 @@
             document.getElementById('courseForm').style.display = 'block';
         }
     }
-    
-    // Initialize form fields with proper styling
+
     document.addEventListener('DOMContentLoaded', function() {
-        // Add Bootstrap classes to form fields
         const inputs = document.querySelectorAll('input[type="text"], input[type="email"], input[type="password"], textarea, select');
         inputs.forEach(input => {
             if (!input.classList.contains('form-control')) {
@@ -240,4 +238,4 @@
         });
     });
 </script>
-{% endblock extra_js %}
+{% endblock %}
