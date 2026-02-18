@@ -142,23 +142,30 @@ def portfolio_logout(request):
 
 
 def contact(request):
-    """Contact form view."""
     if request.method == 'POST':
         form = ContactForm(request.POST)
         if form.is_valid():
-            contact_message = form.save(user=request.user if request.user.is_authenticated else None)
+            try:
+                # Save the message to database (if your form has a save method)
+                contact_message = form.save(user=request.user if request.user.is_authenticated else None)
+            except Exception as e:
+                logger.error(f"Error saving contact message: {e}")
+                messages.error(request, 'There was an error saving your message.')
+                return redirect('contact')
             
+            # Try to send email, but don't crash if it fails
             try:
                 send_mail(
                     f"New Contact: {form.cleaned_data['subject']}",
                     f"From: {form.cleaned_data['name']} ({form.cleaned_data['email']})\n\n{form.cleaned_data['message']}",
                     settings.DEFAULT_FROM_EMAIL,
                     [settings.CONTACT_EMAIL],
-                    fail_silently=False,
+                    fail_silently=True,   # Don't raise exception on failure
                 )
                 messages.success(request, 'Your message has been sent!')
-            except Exception:
-                messages.error(request, 'There was an error sending your message.')
+            except Exception as e:
+                logger.error(f"Error sending email: {e}")
+                messages.warning(request, 'Your message was saved, but email notification could not be sent.')
             
             return redirect('contact')
     else:
@@ -166,7 +173,6 @@ def contact(request):
     
     context = {'form': form, 'page_title': 'Contact'}
     return render(request, 'contact.html', context)
-
 
 def terms(request):
     """Terms and conditions."""
@@ -220,26 +226,29 @@ def project_detail(request, slug):
     return render(request, 'projects/project_detail.html', context)
 
 
-def testimonials_list(request):
-    """List all testimonials."""
-    testimonials = Testimonial.objects.all().order_by('-created_at')
-    featured_testimonials = testimonials.filter(is_featured=True)
-    featured_count = featured_testimonials.count()
-    
-    # Simple counts for categories
-    client_count = testimonials.filter(role__icontains='CEO') | testimonials.filter(role__icontains='Manager')
-    student_count = testimonials.filter(role__icontains='Student')
-    
-    context = {
-        'testimonials': testimonials,
-        'featured_testimonials': featured_testimonials,
-        'featured_count': featured_count,
-        'client_count': client_count.count(),
-        'student_count': student_count.count(),
-        'page_title': 'Testimonials'
-    }
-    return render(request, 'testimonials/testimonials_list.html', context)
+import logging
+logger = logging.getLogger(__name__)
 
+def testimonials_list(request):
+    try:
+        testimonials = Testimonial.objects.all().order_by('-created_at')
+        featured_testimonials = testimonials.filter(is_featured=True)
+        featured_count = featured_testimonials.count()
+        client_count = testimonials.filter(role__icontains='CEO') | testimonials.filter(role__icontains='Manager')
+        student_count = testimonials.filter(role__icontains='Student')
+        context = {
+            'testimonials': testimonials,
+            'featured_testimonials': featured_testimonials,
+            'featured_count': featured_count,
+            'client_count': client_count.count(),
+            'student_count': student_count.count(),
+            'page_title': 'Testimonials'
+        }
+        return render(request, 'testimonials/testimonials_list.html', context)
+    except Exception as e:
+        logger.exception("Error in testimonials_list")
+        # Return a simple page with a friendly message instead of crashing
+        return render(request, 'testimonials/testimonials_list.html', {'testimonials': []})
 
 @login_required
 def blog_list(request):
