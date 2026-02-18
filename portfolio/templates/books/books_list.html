@@ -11,7 +11,22 @@
         <div class="container" data-animate>
             <h1 class="display-3 fw-bold mb-3">My Recommended Books</h1>
             <p class="lead mb-4 col-lg-8 mx-auto">
-                A curated collection of books that have significantly shaped my understanding of data, technology, and life. Discover resources that inspire and educate.
+                A collection of books that have significantly are good and benefiting, in STEM, Data Science, technology, and life. These books are of great value and setting up this database had a cost therefore access to some documents will cost you a donation fee. Don't worry we will still grant you view book UI
+                
+            <p> Discover resources that inspire and educate.</p>
+            </p>
+            <p class="lead mb-4">
+                        Need us to work on a book or research project together
+            </p>
+            <div class="d-grid gap-3 d-sm-flex justify-content-sm-center">
+                <a href="{% url 'contact' %}" class="btn btn-primary btn-lg px-4 me-sm-3">Suggest a Topic <i class="fas fa-lightbulb ms-2"></i></a>
+                <a href="{% url 'blog_list' %}" class="btn btn-outline-primary btn-lg px-4">Read My Blog <i class="fas fa-newspaper ms-2"></i></a>
+                <a href="{% url 'projects_list' %}" class="btn btn-outline-primary btn-lg px-4">Check Out My Projects <i class="fas fa-newspaper ms-2"></i></a>
+                
+            </div>
+            <p>
+                <a href="{% url 'privacy' %}" class="me-3">Privacy Policy</a>
+                <a href="{% url 'terms' %}">Terms of Service</a>
             </p>
         </div>
     </section>

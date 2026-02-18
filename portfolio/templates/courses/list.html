@@ -1,0 +1,194 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Courses - Robert Sichomba{% endblock %}
+
+{% block meta_description %}Browse these development courses and enjoy.{% endblock %}
+
+{% block extra_head %}
+<style>
+    .course-card {
+        transition: transform 0.3s ease;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        border-radius: 16px;
+        overflow: hidden;
+    }
+    .course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 8px 15px rgba(0,0,0,0.15);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<div class="container py-5" style="padding-top: 8rem;">
+    {# Header #}
+    <div class="row mb-5">
+        <div class="col-lg-8 mx-auto text-center">
+            <h1 class="display-4 fw-bold mb-3">Courses</h1>
+            <p class="lead text-muted">
+                I will start by sharing some of the interesting year one undergraduate courses i took and the extra courses i enjoyed during my undergratuate studies at The Copperbelt University. Here, I start by introducing Mathematical Methods (I), Physics (I), Chemistry (I), and Computer Science (I). For data science, machine learning, and web development with hands‑on projects don't hesitate to contact.
+            </p>
+            <p class="lead text-muted">
+                 Please reach out if you have personal challenges, you need some extra time, feel anxious or depressed, we will make accommodations, we are here to help, you don’t have to suffer alone
+
+                 We will be holding an anonymous survey every after 3 weeks to get data about how the course is going for you and if you’d like to see some changes
+
+                 Lectures will/are on Zoom and will be recorded in case you get sick, or need to catch up. The recommended books are given so, no need to worry.
+            </p>
+            <p class="lead mb-4">
+                        Question?</p>
+            <a href="{% url 'contact' %}" class="btn btn-primary btn-lg me-3">Let's Talk <i class="fas fa-comment-dots ms-2"></i></a>
+                    
+        </div>
+    </div>
+
+    {# Filters #}
+    <div class="row mb-4">
+        <div class="col-lg-10 mx-auto">
+            <div class="card border-0 shadow-sm">
+                <div class="card-body p-4">
+                    <form method="get" class="row g-3 align-items-end">
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">School</label>
+                            <select name="school" class="form-select">
+                                <option value="">All Schools</option>
+                                {% for value, label in school_choices %}
+                                <option value="{{ value }}" {% if request.GET.school == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Level</label>
+                            <select name="level" class="form-select">
+                                <option value="">All Levels</option>
+                                {% for value, label in level_choices %}
+                                <option value="{{ value }}" {% if request.GET.level == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Difficulty</label>
+                            <select name="difficulty" class="form-select">
+                                <option value="">All Difficulties</option>
+                                {% for value, label in difficulty_choices %}
+                                <option value="{{ value }}" {% if request.GET.difficulty == value %}selected{% endif %}>{{ label }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label class="form-label fw-semibold">Search</label>
+                            <div class="input-group">
+                                <input type="text" name="search" class="form-control" placeholder="Course title or code" value="{{ request.GET.search }}">
+                                <button class="btn btn-primary" type="submit">
+                                    <i class="fas fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    {# Course Grid #}
+    <div class="row g-4">
+        {% for course in courses %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card course-card h-100">
+                {% if course.thumbnail %}
+                <img src="{{ course.thumbnail.url }}" class="card-img-top" style="height: 200px; object-fit: cover;" alt="{{ course.title }}">
+                {% else %}
+                <div class="bg-primary text-white d-flex align-items-center justify-content-center" style="height: 200px;">
+                    <i class="fas fa-graduation-cap fa-4x"></i>
+                </div>
+                {% endif %}
+                <div class="card-body">
+                    <div class="d-flex justify-content-between align-items-start mb-2">
+                        <span class="badge bg-primary rounded-pill">{{ course.course_code }}</span>
+                        {% if course.is_free %}
+                        <span class="badge bg-success rounded-pill">Free</span>
+                        {% else %}
+                        <span class="badge bg-warning rounded-pill">${{ course.price }}</span>
+                        {% endif %}
+                    </div>
+                    <h5 class="card-title fw-bold mb-2">{{ course.title }}</h5>
+                    <p class="card-text text-muted small">{{ course.description|truncatewords:20 }}</p>
+                    <div class="d-flex align-items-center text-muted small mb-2">
+                        <i class="fas fa-user me-2"></i>{{ course.instructor.get_display_name }}
+                    </div>
+                    <div class="d-flex align-items-center text-muted small mb-3">
+                        <i class="fas fa-users me-2"></i>{{ course.enrollment_count }} enrolled
+                        <i class="fas fa-star text-warning ms-3 me-1"></i>{{ course.rating|floatformat:1 }}
+                    </div>
+                    <div class="d-grid">
+                        <a href="{% url 'course_detail' course.slug %}" class="btn btn-outline-primary rounded-pill">
+                            View Course <i class="fas fa-arrow-right ms-2"></i>
+                        </a>
+                    </div>
+                    {# Static Examples (Remove/Replace with Django loop later) #}
+                {#
+                <div class="col project-item" data-category="machine-learning data-analysis">
+                    <div class="project-card h-100 position-relative d-flex flex-column">
+                        <span class="project-badge">Featured</span>
+                        <img src="{% static 'images/project_potability.jpg' %}" class="card-img-top mb-3" alt="Drinking Water Potability Project">
+                        <div class="card-body p-0 d-flex flex-column">
+                            <h5 class="card-title fw-bold">Drinking Water Potability Classification</h5>
+                            <p class="card-text text-muted mb-2">Machine Learning | Data Analysis</p>
+                            <p class="card-text">Developed an ML model to classify water potability based on various chemical properties. Essential for public health insights.</p>
+                            <div class="tech-tags mt-auto pt-3">
+                                <span>Python</span><span>Scikit-learn</span><span>Pandas</span><span>Streamlit</span>
+                            </div>
+                            <div class="mt-3">
+                                <a href="{% url 'project_detail' 'water-potability-classification' %}" class="btn btn-project">
+                                    <i class="fas fa-arrow-right"></i> View Details
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>#}
+                </div>
+            </div>
+        </div>
+        {% empty %}
+        <div class="col-12 text-center py-5">
+            <i class="fas fa-search fa-4x text-muted mb-4"></i>
+            <h4 class="fw-bold">No courses found</h4>
+            <p class="text-muted">Try adjusting your filters or check back later.</p>
+        </div>
+        {% endfor %}
+    </div>
+
+    {# Pagination #}
+    {% if is_paginated %}
+    <nav aria-label="Course pagination" class="mt-5">
+        <ul class="pagination justify-content-center">
+            {% if page_obj.has_previous %}
+            <li class="page-item">
+                <a class="page-link" href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.previous_page_number }}">
+                    <i class="fas fa-chevron-left"></i>
+                </a>
+            </li>
+            {% endif %}
+            {% for num in page_obj.paginator.page_range %}
+                {% if page_obj.number == num %}
+                <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+                {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
+                <li class="page-item">
+                    <a class="page-link" href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page={{ num }}">{{ num }}</a>
+                </li>
+                {% endif %}
+            {% endfor %}
+            {% if page_obj.has_next %}
+            <li class="page-item">
+                <a class="page-link" href="?{% if request.GET.urlencode %}{{ request.GET.urlencode }}&{% endif %}page={{ page_obj.next_page_number }}">
+                    <i class="fas fa-chevron-right"></i>
+                </a>
+            </li>
+            {% endif %}
+        </ul>
+    </nav>
+    {% endif %}
+</div>
+{% endblock %}
