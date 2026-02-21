@@ -1,132 +1,283 @@
-{% load static %} {# Load the static files tag to use {% static %} #}
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    
-    {# Page Title Block #}
-    <title>{% block title %}Robert Sichomba | Portfolio{% endblock title %}</title>
-    
-    {# Meta Description Block (for SEO) #}
-    <meta name="description" content="{% block meta_description %}Robert Sichomba's official portfolio showcasing expertise in data analysis, machine learning, web development, and educational software solutions.{% endblock meta_description %}">
-    
-    {# Favicon #}
-    <link rel="icon" type="image/x-icon" href="{% static 'images/favicon.ico' %}"> {# Make sure you have a favicon.ico in static/images #}
+{% extends 'base.html' %}
+{% load static %}
 
-    {# Bootstrap CSS (using a stable CDN version) #}
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH" crossorigin="anonymous">
-    
-    {# Google Fonts #}
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet">
-    
-    {# Font Awesome Icons #}
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css" integrity="sha512-SnH5WK+bZxgPHs44uWIX+LLJAJ9/2PkPKZ5QiAj6Ta86w+fsb2TkcmfRyVX3pBnMFcV7oQPJkl9QevSCWr3W6A==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+{% block title %}{{ project.title }} - Project Detail{% endblock %}
 
-    {# Custom Global Stylesheet #}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    
-    {# Additional head content or page-specific styles #}
-    {% block extra_head %}{% endblock extra_head %}
-</head>
-<body>
-    {# Navbar - This will be consistent across all pages #}
-    <nav class="navbar navbar-expand-lg navbar-dark fixed-top"> {# Added fixed-top for consistent positioning #}
+{% block meta_description %}{{ project.description|truncatechars:160 }}{% endblock %}
+
+{% block extra_head %}
+<style>
+    .project-hero {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        color: white;
+        padding: 6rem 0 4rem;
+        margin-bottom: 3rem;
+    }
+    .project-hero h1 {
+        font-size: 3rem;
+        font-weight: 700;
+        margin-bottom: 1rem;
+    }
+    .project-meta {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 2rem;
+        margin-top: 2rem;
+    }
+    .meta-item {
+        display: flex;
+        align-items: center;
+        gap: 0.5rem;
+    }
+    .meta-item i {
+        font-size: 1.2rem;
+        opacity: 0.9;
+    }
+    .tech-tags span {
+        display: inline-block;
+        background: #f8f9fa;
+        color: #495057;
+        padding: 6px 16px;
+        border-radius: 30px;
+        font-size: 0.9rem;
+        font-weight: 600;
+        margin: 0 4px 8px 0;
+        border: 1px solid #e9ecef;
+    }
+    .project-section {
+        margin-bottom: 4rem;
+    }
+    .project-image {
+        border-radius: 20px;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.1);
+        margin-bottom: 2rem;
+    }
+    .related-course-card {
+        transition: transform 0.3s ease;
+        border: none;
+        border-radius: 15px;
+        overflow: hidden;
+        box-shadow: 0 5px 15px rgba(0,0,0,0.08);
+        height: 100%;
+    }
+    .related-course-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 15px 30px rgba(0,0,0,0.12);
+    }
+    .btn-project-github {
+        background-color: #24292e;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .btn-project-github:hover {
+        background-color: #000;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+    .btn-project-demo {
+        background-color: #0d6efd;
+        color: white;
+        border: none;
+        padding: 12px 30px;
+        border-radius: 50px;
+        font-weight: 600;
+        transition: all 0.3s;
+    }
+    .btn-project-demo:hover {
+        background-color: #0b5ed7;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+    {# Hero Section #}
+    <section class="project-hero">
         <div class="container">
-            <a class="navbar-brand" href="{% url 'home' %}">Robert Sichomba</a> {# Use Django's url tag #}
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarNav">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'home' %}page{% else %}false{% endif %}" href="{% url 'home' %}">Home</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'about' %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'about' %}page{% else %}false{% endif %}" href="{% url 'about' %}">About</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'projects_list' or 'project_detail' in request.resolver_match.url_name %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'projects_list' or 'project_detail' in request.resolver_match.url_name %}page{% else %}false{% endif %}" href="{% url 'projects_list' %}">Projects</a>
-                    </li>
-                    <li class="nav-item">
-                        {# Assuming testimonials_list is the name in urls.py #}
-                        <a class="nav-link {% if request.resolver_match.url_name == 'testimonials_list' %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'testimonials_list' %}page{% else %}false{% endif %}" href="{% url 'testimonials_list' %}">Testimonials</a>
-                    </li>
-                    <li class="nav-item">
-                        {# Corrected to contact_view for consistency #}
-                        <a class="nav-link {% if request.resolver_match.url_name == 'contact_view' %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'contact_view' %}page{% else %}false{% endif %}" href="{% url 'contact' %}">Contact</a>
-                    </li>
-                    <li class="nav-item">
-                        <a class="nav-link {% if request.resolver_match.url_name == 'blog_list' or 'blog_detail' in request.resolver_match.url_name %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'blog_list' or 'blog_detail' in request.resolver_match.url_name %}page{% else %}false{% endif %}" href="{% url 'blog_list' %}">Blog</a>
-                    </li>
-                    {# Conditional Login/Logout/Signup #}
-                    {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            {# Corrected to 'home' as per our previous discussion #}
-                            <a class="nav-link {% if request.resolver_match.url_name == 'home' %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'home' %}page{% else %}false{% endif %}" href="{% url 'home' %}">Dashboard</a>
-                        </li>
-                        <li class="nav-item">
-                            <form action="{% url 'logout' %}" method="post" class="d-inline"> {# Changed to user_logout #}
-                                {% csrf_token %}
-                                <button type="submit" class="nav-link btn btn-link text-decoration-none">Logout</button>
-                            </form>
-                        </li>
-                    {% else %}
-                        <li class="nav-item">
-                            {# Changed to user_login for consistency with view function #}
-                            <a class="nav-link {% if request.resolver_match.url_name == 'user_login' %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'user_login' %}page{% else %}false{% endif %}" href="{% url 'login' %}">Login</a>
-                        </li>
-                        <li class="nav-item">
-                            {# Changed to user_signup for consistency with view function #}
-                            <a class="nav-link {% if request.resolver_match.url_name == 'user_signup' %}active{% endif %}" aria-current="{% if request.resolver_match.url_name == 'user_signup' %}page{% else %}false{% endif %}" href="{% url 'signup' %}">Sign Up</a>
-                        </li>
+            <div class="row">
+                <div class="col-lg-8">
+                    <h1>{{ project.title }}</h1>
+                    <p class="lead">{{ project.description|truncatechars:200 }}</p>
+                    <div class="project-meta">
+                        <div class="meta-item">
+                            <i class="fas fa-calendar-alt"></i>
+                            <span>{{ project.created_at|date:"F j, Y" }}</span>
+                        </div>
+                        <div class="meta-item">
+                            <i class="fas fa-tag"></i>
+                            <span class="badge bg-primary">{{ project.get_status_display }}</span>
+                        </div>
+                        {% if project.url or project.github_url %}
+                        <div class="meta-item ms-auto">
+                            {% if project.url %}
+                            <a href="{{ project.url }}" target="_blank" class="btn btn-project-demo me-2">
+                                <i class="fas fa-external-link-alt me-2"></i>Live Demo
+                            </a>
+                            {% endif %}
+                            {% if project.github_url %}
+                            <a href="{{ project.github_url }}" target="_blank" class="btn btn-project-github">
+                                <i class="fab fa-github me-2"></i>GitHub
+                            </a>
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div class="container">
+        {# Main Image #}
+        {% if project.image %}
+        <div class="row justify-content-center">
+            <div class="col-lg-10">
+                <img src="{{ project.image.url }}" class="img-fluid project-image" alt="{{ project.title }}">
+            </div>
+        </div>
+        {% endif %}
+
+        {# Project Details #}
+        <div class="row">
+            <div class="col-lg-8">
+                <section class="project-section">
+                    <h2>About the Project</h2>
+                    <hr>
+                    <div class="project-description">
+                        {{ project.description|linebreaks }}
+                    </div>
+                </section>
+
+                {% if project.body %}
+                <section class="project-section">
+                    <h2>Technical Details</h2>
+                    <hr>
+                    <div class="project-body">
+                        {{ project.body|safe }}
+                    </div>
+                </section>
+                {% endif %}
+
+                {% if project.challenges %}
+                <section class="project-section">
+                    <h2>Challenges & Solutions</h2>
+                    <hr>
+                    <div class="challenges">
+                        {{ project.challenges|linebreaks }}
+                    </div>
+                </section>
+                {% endif %}
+            </div>
+
+            <div class="col-lg-4">
+                {# Skills Used #}
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="fas fa-cogs me-2"></i>Skills & Technologies</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="tech-tags">
+                            {% for skill in project.skills_used.all %}
+                                <span>{{ skill.name }}</span>
+                            {% empty %}
+                                <p class="text-muted">No skills listed.</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                {# Tags #}
+                {% if project.tags %}
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="fas fa-tags me-2"></i>Tags</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="tech-tags">
+                            {% for tag in project.tags_list %}
+                                <span>{{ tag }}</span>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                {# Related Courses #}
+                {% if project.related_courses.all %}
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="fas fa-graduation-cap me-2"></i>Related Courses</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled">
+                            {% for course in project.related_courses.all %}
+                            <li class="mb-3">
+                                <a href="{% url 'course_detail' course.slug %}" class="text-decoration-none">
+                                    <strong>{{ course.course_code }}</strong>: {{ course.title }}
+                                </a>
+                            </li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+                {% endif %}
+
+                {# Project Info Card #}
+                <div class="card mb-4">
+                    <div class="card-header bg-dark text-white">
+                        <h5 class="mb-0"><i class="fas fa-info-circle me-2"></i>Project Info</h5>
+                    </div>
+                    <div class="card-body">
+                        <ul class="list-unstyled mb-0">
+                            <li class="mb-2"><strong>Status:</strong> <span class="badge bg-primary">{{ project.get_status_display }}</span></li>
+                            <li class="mb-2"><strong>Created:</strong> {{ project.created_at|date:"F j, Y" }}</li>
+                            <li class="mb-2"><strong>Last Updated:</strong> {{ project.updated_at|date:"F j, Y" }}</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        {# Navigation to other projects #}
+        <div class="row mt-5">
+            <div class="col-12">
+                <hr>
+                <div class="d-flex justify-content-between align-items-center">
+                    <a href="{% url 'projects_list' %}" class="btn btn-outline-secondary">
+                        <i class="fas fa-arrow-left me-2"></i>Back to All Projects
+                    </a>
+                    {% if project.related_courses.all %}
+                    <a href="{% url 'course_detail' project.related_courses.first.slug %}" class="btn btn-outline-primary">
+                        <i class="fas fa-graduation-cap me-2"></i>View Course
+                    </a>
                     {% endif %}
-                </ul>
+                </div>
             </div>
         </div>
-    </nav>
 
-    {# Django Messages - Display success, error, etc. messages #}
-    {% include 'includes/messages.html' %} {# Assuming you have a messages.html snippet #}
-
-    {# Main Content Block - This is where individual page content goes #}
-    <main>
-        {% block content %}
-        {# Default content or leave empty for child templates to fill #}
-        {% endblock content %}
-    </main>
-
-    {# Back to Top Button #}
-    <button id="backToTopBtn" class="back-to-top" aria-label="Back to top">
-        <i class="fas fa-arrow-up"></i>
-    </button>
-
-    {# Footer - Consistent across all pages #}
-    <footer>
-        <div class="container">
-            <p>&copy; 2025 Robert Sichomba. All Rights Reserved.</p>
-            <div class="social-links mb-3">
-                <a href="https://github.com/robertsichomba" target="_blank" rel="noopener noreferrer" aria-label="GitHub"><i class="fab fa-github"></i></a>
-                <a href="https://linkedin.com/in/robertsichomba" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn"><i class="fab fa-linkedin"></i></a>
-                <a href="https://twitter.com/robertsichomba" target="_blank" rel="noopener noreferrer" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
-                {# Add more social links as needed #}
+        {# Call to Action #}
+        <section class="py-5 bg-light text-center rounded-4 my-5" data-animate>
+            <div class="container my-4">
+                <div class="col-lg-8 mx-auto">
+                    <h2 class="fw-bold mb-4">Like this project?</h2>
+                    <p class="lead mb-4">
+                        I'm always open to discussing new ideas or collaboration opportunities.
+                    </p>
+                    <a href="{% url 'contact' %}" class="btn btn-primary btn-lg me-3">
+                        <i class="fas fa-comment-dots me-2"></i>Let's Talk
+                    </a>
+                    <a href="{% url 'projects_list' %}" class="btn btn-outline-secondary btn-lg">
+                        <i class="fas fa-arrow-left me-2"></i>More Projects
+                    </a>
+                </div>
             </div>
-            <p>
-                {# Changed to privacy_policy_view for consistency #}
-                <a href="{% url 'privacy_policy_view' %}" class="me-3">Privacy Policy</a> 
-                {# Changed to terms_of_service_view for consistency #}
-                <a href="{% url 'terms_of_service_view' %}">Terms of Service</a> 
-            </p>
-        </div>
-    </footer>
-
-    {# Bootstrap JavaScript (bundle includes Popper) #}
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL" crossorigin="anonymous"></script>
-
-    {# Custom Global JavaScript #}
-    <script src="{% static 'js/main.js' %}"></script>
-
-    {# Page-specific JavaScript (e.g., for forms, carousels that need custom init) #}
-    {% block extra_js %}{% endblock extra_js %}
-</body>
-</html>
+        </section>
+    </div>
+{% endblock %}
