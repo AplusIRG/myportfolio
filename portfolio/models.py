@@ -157,9 +157,20 @@ class Project(models.Model):
 
     title = models.CharField(max_length=200)
     slug = models.SlugField(unique=True, blank=True)
-    description = models.TextField(help_text="Detailed description of the project.")
+    description = models.TextField(help_text="Short description (shown in listings)")
+    
+    # NEW FIELD: detailed description for project detail page
+    long_description = models.TextField(
+        blank=True,
+        help_text="Full project description, can include problem statement, methodology, results."
+    )
+    
     image = models.ImageField(upload_to='projects/', blank=True, null=True)
-    url = models.URLField(blank=True, help_text="Link to live demo or GitHub")
+    url = models.URLField(blank=True, help_text="Link to live demo or project page")
+    
+    # NEW FIELD: GitHub repository URL
+    github_url = models.URLField(blank=True, help_text="GitHub repository URL")
+    
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='completed')
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -171,7 +182,7 @@ class Project(models.Model):
     related_courses = models.ManyToManyField(
         'Course',
         blank=True,
-        related_name='projects_as_examples',   # changed from 'example_projects'
+        related_name='projects_as_examples',
         help_text="Courses where this project is used as an example"
     )
 
