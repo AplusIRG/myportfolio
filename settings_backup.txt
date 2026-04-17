@@ -282,11 +282,10 @@ MEDIA_ROOT = BASE_DIR / 'media' # This creates a 'media' folder at your project 
 
 
 
-
 SECRET_KEY=qk2#56t#+!pve042(^70)j$f33v8*m)ho8xom2!b(npv$=lv59
 DEBUG=False
 ALLOWED_HOSTS=127.0.0.1,localhost
-DATABASE_URL=postgresql://rbs_db_user:JU0G6nY6turU21nTuY7h19rBYszOg7ii@dpg-d5q7udngi27c73f62fi0-a/rbs_db
+DATABASE_URL=postgresql://myportfolio_db_uzoq_user:PV5CusT27BowjDntvCuxI1Ot3WleVysw@dpg-d7h1815ckfvc739ndjng-a/myportfolio_db_uzoq
 ADMIN_USERNAME=robertsichomba
 ADMIN_PASSWORD=17114240@Rob
 ADMIN_EMAIL=sichombarobertbob@gmail.com
